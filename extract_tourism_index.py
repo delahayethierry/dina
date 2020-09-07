@@ -1,5 +1,13 @@
 import utils
 
+# Global variables
+CITY_NAME = 'Rome'
+COUNTRY_NAME = 'ITALY'
+
+# Env variables
+here_api_key = os.getenv("here_api_key")
+
+header = {'apikey': here_api_key}
 
 # Main method
 def extract_lighting_index(input_file_accidents):
@@ -25,23 +33,17 @@ def extract_lighting_index(input_file_accidents):
             else:
                 line_dict = utils.extract_line(headers, line_elements)
                 
-                accident_block = utils.extract_block(line_dict['Longitudine'], line_dict['Latitudine'])
-                accident_lighting = line_dict['Illuminazione']
-                
-                # Add the accident to the statistics
-                if accident_block not in accidents_per_block:
-                    accidents_per_block[accident_block] = {}
-                if accident_lighting not in accidents_per_block[accident_block]:
-                    accidents_per_block[accident_block][accident_lighting] = 0
-                accidents_per_block[accident_block][accident_lighting] += 1
+                hotel_address = line_dict['INDIRIZZO']
+                hotel_rooms = int(line_dict['SINGOLE']) + int(line_dict['SINGOLE']) + int(line_dict['DOPPIE']) + int(line_dict['TRIPLE']) + int(line_dict['QUADRUPLE']) + int(line_dict['QUINTUPLE']) + int(line_dict['SESTUPLE'])
+                print(f'Parsed line: {hotel_address} - {hotel_rooms}')
         
             lines_read += 1
 
     # Open the output file
-    with open('accidents_per_block.csv', 'w') as filout:
+    with open('hotels_per_block.csv', 'w') as filout:
         for accident_block in accidents_per_block:
-            line_out_elements = [accident_block, str(accidents_per_block[accident_block]['Insufficiente']) if 'Insufficiente' in accidents_per_block[accident_block] else '0']
-            filout.write(','.join(line_out_elements) + '\n')
+            #line_out_elements = [accident_block, str(accidents_per_block[accident_block]['Insufficiente']) if 'Insufficiente' in accidents_per_block[accident_block] else '0']
+            #filout.write(','.join(line_out_elements) + '\n')
             lines_written += 1
     
     
@@ -56,9 +58,10 @@ def extract_lighting_index(input_file_accidents):
 
 
 
+
 # Module execution: launch main method
 if __name__ == '__main__':
     
-    input_file_accidents = 'csv_incidenti_merge_20192020.csv'
+    input_file_accidents = 'hotel_locations.csv'
     extract_lighting_index(input_file_accidents)
 
