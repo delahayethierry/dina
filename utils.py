@@ -13,6 +13,7 @@ def extract_line(headers, line_elements):
 
 
 # Maps a longitude, latitude to a block. This method can be replaced to whatever block is needed (more/less granular, or any function of longitude, latitude)
+# This larger method takes strings
 # TODO put as well min/max of the block somewhere...
 def extract_block(longitude, latitude):
     
@@ -24,9 +25,17 @@ def extract_block(longitude, latitude):
         latitude = latitude.replace(',','.')
     
         # Build the block name
-        block_name = "%.2f" % float(longitude) + '-' "%.2f" % float(latitude)
+        block_name = extract_block_float(longitude, latitude)
     else:
         block_name = ''
+    
+    return block_name
+
+
+# Maps a longitude, latitude to a block. This method can be replaced to whatever block is needed (more/less granular, or any function of longitude, latitude)
+def extract_block_float(longitude, latitude):
+    
+    block_name = "%.2f" % float(longitude) + '-' "%.2f" % float(latitude)
     
     return block_name
 

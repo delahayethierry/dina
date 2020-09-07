@@ -1,28 +1,35 @@
+import json
+import math
+import os
+import requests
+
 import utils
 
 # Global variables
 CITY_NAME = 'Rome'
-COUNTRY_NAME = 'ITALY'
+COUNTRY_NAME = 'Italy'
 
 # Env variables
-here_api_key = os.getenv("here_api_key")
-
-header = {'apikey': here_api_key}
+HERE_API_KEY = os.getenv("here_api_key")
 
 # Main method
-def extract_lighting_index(input_file_accidents):
+def extract_tourism_index(input_file_hotels):
 
     # Initialize statistical dictionaries
-    accidents_per_block = {}
+    hotel_rooms_per_block = {}
+    max_hotel_rooms_per_block = 1
     
     # General stats
     lines_read = 0
     lines_written = 0
     
-    # Open the accidents file
-    with open(input_file_accidents) as filin_accidents:
+    # General variables
+    geolocation_url = 'https://geocode.search.hereapi.com/v1/geocode'
+    
+    # Open the hotels file
+    with open(input_file_hotels) as filin_hotels:
         
-        for line in filin_accidents:
+        for line in filin_hotels:
             line_elements = line.split(';')
 
             # First line: headers
@@ -35,15 +42,42 @@ def extract_lighting_index(input_file_accidents):
                 
                 hotel_address = line_dict['INDIRIZZO']
                 hotel_rooms = int(line_dict['SINGOLE']) + int(line_dict['SINGOLE']) + int(line_dict['DOPPIE']) + int(line_dict['TRIPLE']) + int(line_dict['QUADRUPLE']) + int(line_dict['QUINTUPLE']) + int(line_dict['SESTUPLE'])
+                
+                # Build the full address line
+                address_query = ', '.join([hotel_address, CITY_NAME, COUNTRY_NAME])
                 print(f'Parsed line: {hotel_address} - {hotel_rooms}')
+                
+                # Build the geolocation request
+                leg_data_json = {
+                    "q": address_query, 
+                    'apikey': HERE_API_KEY
+                }
+                response = requests.get(geolocation_url, params=leg_data_json)
+                print(f'Out: {response.text}')
+                response_json = json.loads(response.text)
+                if len(response_json['items']) > 0:
+                    longitude = response_json['items'][0]['position']['lng']
+                    latitude = response_json['items'][0]['position']['lat']
+                    print(longitude, latitude)
+                    hotel_block = utils.extract_block_float(longitude, latitude)
+                
+                    # Add the hotel to the statistics
+                    if hotel_block not in hotel_rooms_per_block:
+                        hotel_rooms_per_block[hotel_block] = 0
+                    hotel_rooms_per_block[hotel_block] += hotel_rooms
+                    if hotel_rooms_per_block[hotel_block] > max_hotel_rooms_per_block:
+                        max_hotel_rooms_per_block = hotel_rooms_per_block[hotel_block]
+                break
         
             lines_read += 1
 
     # Open the output file
     with open('hotels_per_block.csv', 'w') as filout:
-        for accident_block in accidents_per_block:
-            #line_out_elements = [accident_block, str(accidents_per_block[accident_block]['Insufficiente']) if 'Insufficiente' in accidents_per_block[accident_block] else '0']
-            #filout.write(','.join(line_out_elements) + '\n')
+        for hotel_block in hotel_rooms_per_block:
+            hotel_rooms_per_block_raw = hotel_rooms_per_block[hotel_block]
+            hotel_rooms_per_block_index = math.floor((hotel_rooms_per_block_raw / max_hotel_rooms_per_block) * 10)
+            line_out_elements = [str(i) for i in [hotel_block, hotel_rooms_per_block_raw, hotel_rooms_per_block_index]]
+            filout.write(','.join(line_out_elements) + '\n')
             lines_written += 1
     
     
@@ -62,6 +96,6 @@ def extract_lighting_index(input_file_accidents):
 # Module execution: launch main method
 if __name__ == '__main__':
     
-    input_file_accidents = 'hotel_locations.csv'
-    extract_lighting_index(input_file_accidents)
+    input_file_hotels = 'hotel_locations.csv'
+    extract_tourism_index(input_file_hotels)
 
