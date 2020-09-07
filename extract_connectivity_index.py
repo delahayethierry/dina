@@ -67,7 +67,6 @@ def extract_connectivity_index(input_file_hotels):
                     hotel_rooms_per_block[hotel_block] += hotel_rooms
                     if hotel_rooms_per_block[hotel_block] > max_hotel_rooms_per_block:
                         max_hotel_rooms_per_block = hotel_rooms_per_block[hotel_block]
-                break
         
             lines_read += 1
 
