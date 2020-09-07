@@ -13,7 +13,7 @@ COUNTRY_NAME = 'Italy'
 HERE_API_KEY = os.getenv("here_api_key")
 
 # Main method
-def extract_tourism_index(input_file_hotels):
+def extract_connectivity_index(input_file_hotels):
 
     # Initialize statistical dictionaries
     hotel_rooms_per_block = {}
@@ -97,5 +97,5 @@ def extract_tourism_index(input_file_hotels):
 if __name__ == '__main__':
     
     input_file_hotels = 'hotel_locations.csv'
-    extract_tourism_index(input_file_hotels)
+    extract_connectivity_index(input_file_hotels)
 
