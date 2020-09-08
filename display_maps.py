@@ -42,7 +42,7 @@ def createHeatMapWithTimeFromIndexFile(indexFile):
     print(heat_data)
     # Plot data on the map
     #heatMapIndex = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep'] #we are using 2020 data so datasets stops in Sep 2020
-    heatmap_from_index = plugins.HeatMapWithTime(heat_data,auto_play=False,min_opacity = 0.05, max_opacity=0.3, use_local_extrema = True, gradient={0.5: 'lightcyan', 0.7: 'lime', 0.9: 'red'}, radius = 150)
+    heatmap_from_index = plugins.HeatMapWithTime(heat_data,auto_play=False,min_opacity = 0.05, max_opacity=0.3, use_local_extrema = True, gradient={0: 'lightcyan', 0.2: 'lime', 0.9: 'red'}, radius = 150)
   
 
     return heatmap_from_index
