@@ -23,7 +23,7 @@
             <meta name="viewport" content="width=device-width,
                 initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
             <style>
-                #map_c71fadca119e44ea85539c326bc97e4d {
+                #map_bb5e20e8f22a44cb9cf1859d5a9c74c5 {
                     position: relative;
                     width: 100.0%;
                     height: 100.0%;
@@ -120,13 +120,13 @@
 </head>
 <body>    
     
-            <div class="folium-map" id="map_c71fadca119e44ea85539c326bc97e4d" ></div>
+            <div class="folium-map" id="map_bb5e20e8f22a44cb9cf1859d5a9c74c5" ></div>
         
 </body>
 <script>    
     
-            var map_c71fadca119e44ea85539c326bc97e4d = L.map(
-                "map_c71fadca119e44ea85539c326bc97e4d",
+            var map_bb5e20e8f22a44cb9cf1859d5a9c74c5 = L.map(
+                "map_bb5e20e8f22a44cb9cf1859d5a9c74c5",
                 {
                     center: [41.902782, 12.496366],
                     crs: L.CRS.EPSG3857,
@@ -140,20 +140,20 @@
 
         
     
-            var tile_layer_0cd6cecc39844a2c95f4dee3c6aff150 = L.tileLayer(
+            var tile_layer_38135ddea90c4a9783ffe73810dae63b = L.tileLayer(
                 "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
                 {"attribution": "Data by \u0026copy; \u003ca href=\"http://openstreetmap.org\"\u003eOpenStreetMap\u003c/a\u003e, under \u003ca href=\"http://www.openstreetmap.org/copyright\"\u003eODbL\u003c/a\u003e.", "detectRetina": false, "maxNativeZoom": 18, "maxZoom": 18, "minZoom": 0, "noWrap": false, "opacity": 1, "subdomains": "abc", "tms": false}
-            ).addTo(map_c71fadca119e44ea85539c326bc97e4d);
+            ).addTo(map_bb5e20e8f22a44cb9cf1859d5a9c74c5);
         
     
 
             var times = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
-            map_c71fadca119e44ea85539c326bc97e4d.timeDimension = L.timeDimension(
+            map_bb5e20e8f22a44cb9cf1859d5a9c74c5.timeDimension = L.timeDimension(
                 {times : times, currentTime: new Date(1)}
             );
 
-            var heat_map_e97ed01eb8744b8fa8678f34bdae32aaControl = new L.Control.TimeDimensionCustom(['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'], {
+            var heat_map_29742ff3ea6d4a7385cf7179c3f88a07Control = new L.Control.TimeDimensionCustom(['1', '2', '3', '4', '5', '6', '7', '8', '9'], {
                 autoPlay: false,
                 backwardButton: true,
                 displayDate: true,
@@ -173,35 +173,35 @@
                 timeSliderDrapUpdate: false,
                 timeSteps: 1
                 })
-                .addTo(map_c71fadca119e44ea85539c326bc97e4d);
+                .addTo(map_bb5e20e8f22a44cb9cf1859d5a9c74c5);
 
-                var heat_map_e97ed01eb8744b8fa8678f34bdae32aa = new TDHeatmap([[[41.898059, 12.47693, 3.0], [41.898058, 12.476933, 4.0]], [[41.898058, 12.476933, 4.0]], [[41.898052, 12.476936, 9.0]], [[41.898051, 12.476931, 10.0]], [[41.898052, 12.476939, 0.0]], [[41.898056, 12.476932, 2.0]], [[41.898053, 12.476931, 3.0]], [[41.898052, 12.47693, 4.0]], [[41.898058, 12.476933, 7.0]]],
+                var heat_map_29742ff3ea6d4a7385cf7179c3f88a07 = new TDHeatmap([[[41.898059, 12.47693, 3.0], [41.898058, 12.476933, 4.0]], [[41.898058, 12.476933, 4.0]], [[41.898052, 12.476936, 9.0]], [[41.898051, 12.476931, 10.0]], [[41.898052, 12.476939, 0.0]], [[41.898056, 12.476932, 2.0]], [[41.898053, 12.476931, 3.0]], [[41.898052, 12.47693, 4.0]], [[41.898058, 12.476933, 7.0]]],
                 {heatmapOptions: {
-                        radius: 20,
-                        minOpacity: 0,
-                        maxOpacity: 0.8,
+                        radius: 150,
+                        minOpacity: 0.05,
+                        maxOpacity: 0.3,
                         scaleRadius: false,
-                        useLocalExtrema: false,
+                        useLocalExtrema: true,
                         defaultWeight: 1,
-                        
+                        gradient: {0.5: 'lightcyan', 0.7: 'lime', 0.9: 'red'}
                     }
                 })
-                .addTo(map_c71fadca119e44ea85539c326bc97e4d);
+                .addTo(map_bb5e20e8f22a44cb9cf1859d5a9c74c5);
 
         
     
-            var layer_control_5a0327bd27ae4c59840cd027c5e21aa3 = {
+            var layer_control_f1df471c63a942cf993e4155ef5e1f6f = {
                 base_layers : {
-                    "openstreetmap" : tile_layer_0cd6cecc39844a2c95f4dee3c6aff150,
+                    "openstreetmap" : tile_layer_38135ddea90c4a9783ffe73810dae63b,
                 },
                 overlays :  {
-                    "macro_element_e97ed01eb8744b8fa8678f34bdae32aa" : heat_map_e97ed01eb8744b8fa8678f34bdae32aa,
+                    "macro_element_29742ff3ea6d4a7385cf7179c3f88a07" : heat_map_29742ff3ea6d4a7385cf7179c3f88a07,
                 },
             };
             L.control.layers(
-                layer_control_5a0327bd27ae4c59840cd027c5e21aa3.base_layers,
-                layer_control_5a0327bd27ae4c59840cd027c5e21aa3.overlays,
+                layer_control_f1df471c63a942cf993e4155ef5e1f6f.base_layers,
+                layer_control_f1df471c63a942cf993e4155ef5e1f6f.overlays,
                 {"autoZIndex": true, "collapsed": true, "position": "topright"}
-            ).addTo(map_c71fadca119e44ea85539c326bc97e4d);
+            ).addTo(map_bb5e20e8f22a44cb9cf1859d5a9c74c5);
         
 </script>

@@ -39,11 +39,12 @@ def createHeatMapWithTimeFromIndexFile(indexFile):
     for _, d in heatmap_index_df.groupby('Month'):
         heat_data.append([[row['Latitude'], row['Longitude'], row['Index']] for _, row in d.iterrows()])
     
-
+    print(heat_data)
     # Plot data on the map
-    heatMapIndex = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep'] #we are using 2020 data so datasets stops in Sep 2020
-    heatmap_from_index = plugins.HeatMapWithTime(heat_data,index=heatMapIndex, auto_play=False,radius=20,max_opacity=0.8)
-    
+    #heatMapIndex = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep'] #we are using 2020 data so datasets stops in Sep 2020
+    heatmap_from_index = plugins.HeatMapWithTime(heat_data,auto_play=False,min_opacity = 0.05, max_opacity=0.3, use_local_extrema = True, gradient={0.5: 'lightcyan', 0.7: 'lime', 0.9: 'red'}, radius = 150)
+  
+
     return heatmap_from_index
 
 #Example of market that we could add for security inded (but the best is to have a heatmap)
@@ -68,6 +69,6 @@ if __name__ == '__main__':
     print("Folium Version: " + folium.__version__)
         
     #Create maps
-    createMap(lighting_needs_index_file ,'Lighting Needs Index')  
     createMap(security_needs_index_file ,'Security Needs Index')  
     createMap(connectivity_needs_index_file ,'Connectivity Needs Index')  
+    createMap(lighting_needs_index_file ,'Lighting Needs Index')  
