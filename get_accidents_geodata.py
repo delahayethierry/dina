@@ -51,7 +51,7 @@ def get_accidents_geodata(input_file_accidents):
     with open('output_data/accidents.csv', 'w') as filout:
 
         # Print headers
-        filout.write(utils.write_index_headers()+ '\n')
+        filout.write(utils.write_index_headers('accidents')+ '\n')
 
         # Loop over the blocks and fill the lines
         for accident_block in accidents_per_block:

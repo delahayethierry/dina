@@ -61,8 +61,14 @@ def build_dummy_block():
 
 
 # Writes the headers for the index files to be used for mapping
-def write_index_headers():
+def get_index_headers():
 
-    return 'Latitude,Longitude,Year,Month,Index'
+    return ['Latitude','Longitude','Year','Month'] #,'Index']
+
+
+# Writes the headers for the index files to be used for mapping. Replaces the last column with the datasource name
+def write_index_headers(datasource_name):
+
+    return ','.join(get_index_headers() + [datasource_name])
 
 
