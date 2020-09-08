@@ -90,9 +90,11 @@ Open a command line and go to the folder where DINA has been downloaded and comm
 
 
 It will generate 3 html files containing the maps in the sub-folder ./map/ and try to open them with a web browser:
-- [DINA_Lighting_Needs_Index.html](./map/DINA_Lighting_Needs_Index.html)
-- [DINA_Security_Needs_Index.html](./map/DINA_Security_Needs_Index.html)
-- [DINA_Connectivity_Needs_Index.html](./map/DINA_Connectivity_Needs_Index.html)
+* [DINA_Lighting_Needs_Index.html](./map/DINA_Lighting_Needs_Index.html)
+* [DINA_Security_Needs_Index.html](./map/DINA_Security_Needs_Index.html)
+* [DINA_Connectivity_Needs_Index.html](./map/DINA_Connectivity_Needs_Index.html)
+
+![Example of Heatmap for the city of Roma and Lighting Needs](DINA_HeatMap_Example.png)
 
 
 ##  Built Using <a name = "built_using"></a>
