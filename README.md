@@ -110,4 +110,4 @@ It will generate 3 html files containing the maps in the sub-folder ./map/ and t
 
 - Hat tip to anyone whose code was used
 - Inspiration
-- References
+- [Polygons of the Municipalities of Rome from the Metropolitan City of Rome Capital](http://websit.cittametropolitanaroma.it/UrlDownload.aspx?i=16)
