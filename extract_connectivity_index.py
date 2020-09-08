@@ -35,7 +35,7 @@ def extract_connectivity_index(input_file_hotels):
         
         while True:
             try:
-                line = next(f)
+                line = next(filin_hotels)
 
                 line_elements = line.split(';')
 
@@ -78,7 +78,7 @@ def extract_connectivity_index(input_file_hotels):
                             max_hotel_rooms_per_block = hotel_rooms_per_block[hotel_block_name]['rooms']
             
                 lines_read += 1
-                
+
             except StopIteration:
                 break
             except UnicodeDecodeError:
