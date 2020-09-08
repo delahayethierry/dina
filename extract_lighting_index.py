@@ -12,6 +12,10 @@ def extract_lighting_index(input_file_accidents):
     # General stats
     lines_read = 0
     lines_written = 0
+
+    # Dummy year and month variables
+    year = '2020'
+    month = '01'
     
     # Open the accidents file
     with open(input_file_accidents) as filin_accidents:
@@ -27,27 +31,29 @@ def extract_lighting_index(input_file_accidents):
             else:
                 line_dict = utils.extract_line(headers, line_elements)
                 
-                accident_block = utils.extract_block(line_dict['Longitudine'], line_dict['Latitudine'])
+                accident_block_details = utils.extract_block(line_dict['Longitudine'], line_dict['Latitudine'])
+                accident_block_name = accident_block_details['name']
                 accident_lighting = line_dict['Illuminazione']
                 
                 # Add the accident to the statistics
-                if accident_block not in accidents_per_block:
-                    accidents_per_block[accident_block] = {}
-                if accident_lighting not in accidents_per_block[accident_block]:
-                    accidents_per_block[accident_block][accident_lighting] = 0
-                accidents_per_block[accident_block][accident_lighting] += 1
+                if accident_block_name not in accidents_per_block:
+                    accidents_per_block[accident_block_name] = accident_block_details
+                if accident_lighting not in accidents_per_block[accident_block_name]:
+                    accidents_per_block[accident_block_name][accident_lighting] = 0
+                accidents_per_block[accident_block_name][accident_lighting] += 1
                 if accident_lighting == 'Insufficiente':
-                    if accidents_per_block[accident_block][accident_lighting] > max_accidents_per_block:
-                        max_accidents_per_block = int(accidents_per_block[accident_block][accident_lighting])
+                    if accidents_per_block[accident_block_name][accident_lighting] > max_accidents_per_block:
+                        max_accidents_per_block = int(accidents_per_block[accident_block_name][accident_lighting])
         
             lines_read += 1
 
     # Open the output file
     with open('accidents_per_block.csv', 'w') as filout:
         for accident_block in accidents_per_block:
-            accidents_per_block_raw = accidents_per_block[accident_block]['Insufficiente'] if 'Insufficiente' in accidents_per_block[accident_block] else 0
+            accident_block_details = accidents_per_block[accident_block]
+            accidents_per_block_raw = accident_block_details['Insufficiente'] if 'Insufficiente' in accident_block_details else 0
             accidents_per_block_index = math.floor((float(accidents_per_block_raw) / float(max_accidents_per_block)) * 10)
-            line_out_elements = [str(i) for i in [accident_block, accidents_per_block_raw, accidents_per_block_index]]
+            line_out_elements = [str(i) for i in [accident_block_details['longitude'], accident_block_details['latitude'], year, month, accidents_per_block_index]]
             filout.write(','.join(line_out_elements) + '\n')
             lines_written += 1
     

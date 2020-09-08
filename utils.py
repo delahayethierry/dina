@@ -1,3 +1,4 @@
+import math
 
 # Extracts a line as a dictionary. Assumes the number of elements in the line is the same as the number of headers
 def extract_line(headers, line_elements):
@@ -25,17 +26,36 @@ def extract_block(longitude, latitude):
         latitude = latitude.replace(',','.')
     
         # Build the block name
-        block_name = extract_block_float(longitude, latitude)
+        block = extract_block_float(longitude, latitude)
     else:
-        block_name = ''
+        block = build_dummy_block()
     
-    return block_name
+    return block
 
 
 # Maps a longitude, latitude to a block. This method can be replaced to whatever block is needed (more/less granular, or any function of longitude, latitude)
 def extract_block_float(longitude, latitude):
+
+    longitude_float = float(longitude)
+    latitude_float = float(latitude)
+
+    block_name = {
+        'longitude' : (float(math.floor(longitude_float*10))+0.5)/10,
+        'latitude' : (float(math.floor(latitude_float*10))+0.5)/10
+    }
+    block_name['name'] = str(block_name['longitude']) + '-' + str(block_name['latitude'])
     
-    block_name = "%.2f" % float(longitude) + '-' "%.2f" % float(latitude)
+    return block_name
+
+
+# Builds a dummy block for cases where we do not have the coordinates
+def build_dummy_block():
+
+    block_name = {
+        'longitude' : 0,
+        'latitude' : 0
+    }
+    block_name['name'] = ''
     
     return block_name
 
