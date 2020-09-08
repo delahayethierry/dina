@@ -68,22 +68,20 @@ def extract_connectivity_index(input_file_hotels):
                 
                     # Add the hotel to the statistics
                     if hotel_block_name not in hotel_rooms_per_block:
-                        hotel_rooms_per_block[hotel_block_name] = 0
-                    hotel_rooms_per_block[hotel_block_name] += hotel_rooms
-                    if hotel_rooms_per_block[hotel_block_name] > max_hotel_rooms_per_block:
-                        max_hotel_rooms_per_block = hotel_rooms_per_block[hotel_block_name]
+                        hotel_rooms_per_block[hotel_block_name] = hotel_block_details
+                        hotel_rooms_per_block[hotel_block_name]['rooms'] = 0
+                    hotel_rooms_per_block[hotel_block_name]['rooms'] += hotel_rooms
+                    if hotel_rooms_per_block[hotel_block_name]['rooms'] > max_hotel_rooms_per_block:
+                        max_hotel_rooms_per_block = hotel_rooms_per_block[hotel_block_name]['rooms']
         
             lines_read += 1
-            if lines_read > 20:
-                break
 
     # Open the output file
     with open('hotels_per_block.csv', 'w') as filout:
         for hotel_block in hotel_rooms_per_block:
             hotel_rooms_block_details = hotel_rooms_per_block[hotel_block]
-            hotel_rooms_per_block_index = math.floor((hotel_rooms_block_details / max_hotel_rooms_per_block) * 10)
-            line_out_elements = [str(i) for i in [hotel_block, hotel_rooms_block_details, hotel_rooms_per_block_index]]
-            line_out_elements = [str(i) for i in [hotel_rooms_block_details['longitude'], accident_block_details['latitude'], year, month, accidents_per_block_index]]
+            hotel_rooms_per_block_index = math.floor((hotel_rooms_block_details['rooms'] / max_hotel_rooms_per_block) * 10)
+            line_out_elements = [str(i) for i in [hotel_rooms_block_details['longitude'], hotel_rooms_block_details['latitude'], year, month, hotel_rooms_per_block_index]]
             filout.write(','.join(line_out_elements) + '\n')
             lines_written += 1
     
