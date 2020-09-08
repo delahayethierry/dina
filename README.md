@@ -56,38 +56,44 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-What things you need to install the software and how to install them.
+Things you need to install the software and how to install them.
 
-```
-Give examples
-```
+#### Here API Key to benefit from Here! Rest APIs
+1. Get an Here! Freemium Account (location APIs) [here](https://developer.here.com/sign-up?create=Freemium-Basic&keepState=true&step=account)
+2. Create an app and generate an API key
+3. Store the API key in an environment variable called `here_api_key` (for Windows 10, follow this [procedure](https://www.onmsft.com/how-to/how-to-set-an-environment-variable-in-windows-10))
 
-### Installing
 
-A step by step series of examples that tell you how to get a development env running.
+### Installing Python and pip
 
-Say what the step will be
 
-```
-Give the example
-```
+You need to install:
+1. a recent version of Python (see [for instance this package for Windows](https://www.python.org/downloads/release/python-385/))
+2. the pip tool in order to install Python packages (see [installation guide](https://www.liquidweb.com/kb/install-pip-windows/))
 
-And repeat
+Once pip is installed, download the requested python packages (folium for maps display, pandas for csv files processing) by opening a command line and typing
 
-```
-until finished
-```
-
-End with an example of getting some data out of the system or using it for a little demo.
+`$ pip install folium`
+`$ pip install pandas`
 
 
 ##  Usage <a name="usage"></a>
 
-Add notes about how to use the system.
+## Run the DINA Open Data Ingestion module
+Thierry to complete
 
-##  Deployment <a name = "deployment"></a>
+## Generate and display the DINA Heat Maps (Lighting Needs Index, Security Needs Index, Connectivity Needs Index)
 
-Add additional notes about how to deploy this on a live system.
+Open a command line and go to the folder where DINA has been downloaded and commands:
+`python` 
+`display_maps`
+
+
+It will generate 3 html files containing the maps in the sub-folder ./map/ and try to open them with a web browser:
+- [DINA_Lighting_Needs_Index.html](./map/DINA_Lighting_Needs_Index.html)
+- [DINA_Security_Needs_Index.html](./map/DINA_Security_Needs_Index.html)
+- [DINA_Connectivity_Needs_Index.html](./map/DINA_Connectivity_Needs_Index.html)
+
 
 ##  Built Using <a name = "built_using"></a>
 
