@@ -58,7 +58,7 @@ def get_accidents_geodata(input_file_accidents):
             accident_block_details = accidents_per_block[accident_block]
             accidents_per_block_raw = accident_block_details['Insufficiente'] if 'Insufficiente' in accident_block_details else 0
             accidents_per_block_index = math.floor((float(accidents_per_block_raw) / float(max_accidents_per_block)) * 10)
-            line_out_elements = [str(i) for i in [accident_block_details['longitude'], accident_block_details['latitude'], year, month, accidents_per_block_index]]
+            line_out_elements = [str(i) for i in [accident_block_details['latitude'], accident_block_details['longitude'], year, month, accidents_per_block_index]]
             filout.write(','.join(line_out_elements) + '\n')
             lines_written += 1
     

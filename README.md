@@ -80,7 +80,15 @@ Once pip is installed, download the requested python packages (folium for maps d
 ##  Usage <a name="usage"></a>
 
 ## Run the DINA Open Data Ingestion module
-Thierry to complete
+
+The first step is to process the input data from open data portals. This is done with the process_input_data block:
+`$ python process_input_data.py`
+
+This will generate some data files in the output_data folder. These datasets are already included in the repository as some of them require heavy processing to be created. In particular, the hotel csv needs to call a geocoding API for each of the 90,000 hotels in Rome, which can take a long time
+
+From the files in the output_data, the indices can be generated. These are weighted averages of a subset of data indicators, as defined in the main method of create_indexes.py . To generate the indices, run:
+`$ python create_indexes.py`
+
 
 ## Generate and display the DINA Heat Maps (Lighting Needs Index, Security Needs Index, Connectivity Needs Index)
 
