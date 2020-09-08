@@ -40,8 +40,8 @@ def extract_block_float(longitude, latitude):
     latitude_float = float(latitude)
 
     block_name = {
-        'longitude' : (float(math.floor(longitude_float*10))+0.5)/10,
-        'latitude' : (float(math.floor(latitude_float*10))+0.5)/10
+        'longitude' : (float(math.floor(longitude_float*100))+0.5)/100,
+        'latitude' : (float(math.floor(latitude_float*100))+0.5)/100
     }
     block_name['name'] = str(block_name['longitude']) + '-' + str(block_name['latitude'])
     

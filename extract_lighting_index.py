@@ -48,7 +48,7 @@ def extract_lighting_index(input_file_accidents):
             lines_read += 1
 
     # Open the output file
-    with open('accidents_per_block.csv', 'w') as filout:
+    with open('map/lighting_needs_index.csv', 'w') as filout:
         for accident_block in accidents_per_block:
             accident_block_details = accidents_per_block[accident_block]
             accidents_per_block_raw = accident_block_details['Insufficiente'] if 'Insufficiente' in accident_block_details else 0

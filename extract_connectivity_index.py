@@ -22,6 +22,10 @@ def extract_connectivity_index(input_file_hotels):
     # General stats
     lines_read = 0
     lines_written = 0
+
+    # Dummy year and month variables
+    year = '2020'
+    month = '01'
     
     # General variables
     geolocation_url = 'https://geocode.search.hereapi.com/v1/geocode'
@@ -59,23 +63,27 @@ def extract_connectivity_index(input_file_hotels):
                     longitude = response_json['items'][0]['position']['lng']
                     latitude = response_json['items'][0]['position']['lat']
                     print(longitude, latitude)
-                    hotel_block = utils.extract_block_float(longitude, latitude)
+                    hotel_block_details = utils.extract_block_float(longitude, latitude)
+                    hotel_block_name = hotel_block_details['name']
                 
                     # Add the hotel to the statistics
-                    if hotel_block not in hotel_rooms_per_block:
-                        hotel_rooms_per_block[hotel_block] = 0
-                    hotel_rooms_per_block[hotel_block] += hotel_rooms
-                    if hotel_rooms_per_block[hotel_block] > max_hotel_rooms_per_block:
-                        max_hotel_rooms_per_block = hotel_rooms_per_block[hotel_block]
+                    if hotel_block_name not in hotel_rooms_per_block:
+                        hotel_rooms_per_block[hotel_block_name] = 0
+                    hotel_rooms_per_block[hotel_block_name] += hotel_rooms
+                    if hotel_rooms_per_block[hotel_block_name] > max_hotel_rooms_per_block:
+                        max_hotel_rooms_per_block = hotel_rooms_per_block[hotel_block_name]
         
             lines_read += 1
+            if lines_read > 20:
+                break
 
     # Open the output file
     with open('hotels_per_block.csv', 'w') as filout:
         for hotel_block in hotel_rooms_per_block:
-            hotel_rooms_per_block_raw = hotel_rooms_per_block[hotel_block]
-            hotel_rooms_per_block_index = math.floor((hotel_rooms_per_block_raw / max_hotel_rooms_per_block) * 10)
-            line_out_elements = [str(i) for i in [hotel_block, hotel_rooms_per_block_raw, hotel_rooms_per_block_index]]
+            hotel_rooms_block_details = hotel_rooms_per_block[hotel_block]
+            hotel_rooms_per_block_index = math.floor((hotel_rooms_block_details / max_hotel_rooms_per_block) * 10)
+            line_out_elements = [str(i) for i in [hotel_block, hotel_rooms_block_details, hotel_rooms_per_block_index]]
+            line_out_elements = [str(i) for i in [hotel_rooms_block_details['longitude'], accident_block_details['latitude'], year, month, accidents_per_block_index]]
             filout.write(','.join(line_out_elements) + '\n')
             lines_written += 1
     
