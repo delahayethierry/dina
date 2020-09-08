@@ -48,10 +48,10 @@ def get_accidents_geodata(input_file_accidents):
             lines_read += 1
 
     # Open the output file
-    with open('map/lighting_needs_index.csv', 'w') as filout:
+    with open('output_data/accidents.csv', 'w') as filout:
 
         # Print headers
-        filout.write(utils.write_index_headers()+ '\n'))
+        filout.write(utils.write_index_headers()+ '\n')
 
         # Loop over the blocks and fill the lines
         for accident_block in accidents_per_block:

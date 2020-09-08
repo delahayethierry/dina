@@ -85,10 +85,10 @@ def get_hotel_geodata(input_file_hotels):
                 print(f'Error: could not decode line {lines_read}')
 
     # Open the output file
-    with open('map/connectivity_needs_index.csv', 'w') as filout:
+    with open('output_data/hotels.csv', 'w') as filout:
 
         # Print headers
-        filout.write(utils.write_index_headers()+ '\n'))
+        filout.write(utils.write_index_headers()+ '\n')
 
         # Loop over the blocks and fill the lines
         for hotel_block in hotel_rooms_per_block:
