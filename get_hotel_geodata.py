@@ -31,7 +31,7 @@ def get_hotel_geodata(input_file_hotels):
     geolocation_url = 'https://geocode.search.hereapi.com/v1/geocode'
     
     # Open the hotels file
-    with open(input_file_hotels) as filin_hotels:
+    with open(input_file_hotels) as filin_hotels, open('output_data/hotels_geolocated.csv', 'w') as filout_hotels_geolocated:
         
         while True:
             try:
@@ -48,8 +48,11 @@ def get_hotel_geodata(input_file_hotels):
                     line_dict = utils.extract_line(headers, line_elements)
                     
                     hotel_address = line_dict['INDIRIZZO']
-                    hotel_rooms = int(line_dict['SINGOLE']) + int(line_dict['SINGOLE']) + int(line_dict['DOPPIE']) + int(line_dict['TRIPLE']) + int(line_dict['QUADRUPLE']) + int(line_dict['QUINTUPLE']) + int(line_dict['SESTUPLE'])
-                    
+                    try:
+                        hotel_rooms = int(line_dict['SINGOLE']) + int(line_dict['SINGOLE']) + int(line_dict['DOPPIE']) + int(line_dict['TRIPLE']) + int(line_dict['QUADRUPLE']) + int(line_dict['QUINTUPLE']) + int(line_dict['SESTUPLE'])
+                    except:
+                        hotel_rooms = 0
+
                     # Build the full address line
                     address_query = ', '.join([hotel_address, CITY_NAME, COUNTRY_NAME])
                     print(f'Parsed line: {hotel_address} - {hotel_rooms}')
@@ -76,6 +79,8 @@ def get_hotel_geodata(input_file_hotels):
                         hotel_rooms_per_block[hotel_block_name]['rooms'] += hotel_rooms
                         if hotel_rooms_per_block[hotel_block_name]['rooms'] > max_hotel_rooms_per_block:
                             max_hotel_rooms_per_block = hotel_rooms_per_block[hotel_block_name]['rooms']
+
+                        filout_hotels_geolocated.write(';'.join(line_elements + [latitude, longitude]))
             
                 lines_read += 1
 
