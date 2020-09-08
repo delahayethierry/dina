@@ -82,7 +82,7 @@ def extract_connectivity_index(input_file_hotels):
             except StopIteration:
                 break
             except UnicodeDecodeError:
-                pass
+                print(f'Error: could not decode line {lines_read}')
 
     # Open the output file
     with open('map/connectivity_needs_index.csv', 'w') as filout:
