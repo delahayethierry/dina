@@ -114,6 +114,6 @@ def get_hotel_geodata(input_file_hotels):
 # Module execution: launch main method
 if __name__ == '__main__':
     
-    input_file_hotels = 'hotel_locations.csv'
+    input_file_hotels = 'input_data/hotel_locations.csv'
     get_hotel_geodata(input_file_hotels)
 

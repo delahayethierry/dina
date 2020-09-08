@@ -1,6 +1,5 @@
 import math
 import pandas as pd
-import utils
 
 import utils
 
@@ -37,7 +36,6 @@ def create_indexes():
         # Write the index to the map file
         print(f'Writing index file for {index}')
         index_values.to_csv(f'map/{index}_needs_index.csv', index=False)
-
 
     return
 

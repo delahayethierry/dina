@@ -74,6 +74,6 @@ def get_accidents_geodata(input_file_accidents):
 # Module execution: launch main method
 if __name__ == '__main__':
     
-    input_file_accidents = 'csv_incidenti_merge_20192020.csv'
+    input_file_accidents = 'input_data/csv_incidenti_merge_20192020.csv'
     get_accidents_geodata(input_file_accidents)
 
