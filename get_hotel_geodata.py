@@ -63,12 +63,10 @@ def get_hotel_geodata(input_file_hotels):
                         'apikey': HERE_API_KEY
                     }
                     response = requests.get(geolocation_url, params=leg_data_json)
-                    print(f'Out: {response.text}')
                     response_json = json.loads(response.text)
                     if len(response_json['items']) > 0:
                         longitude = response_json['items'][0]['position']['lng']
                         latitude = response_json['items'][0]['position']['lat']
-                        print(longitude, latitude)
                         hotel_block_details = utils.extract_block_float(longitude, latitude)
                         hotel_block_name = hotel_block_details['name']
                     
@@ -80,9 +78,11 @@ def get_hotel_geodata(input_file_hotels):
                         if hotel_rooms_per_block[hotel_block_name]['rooms'] > max_hotel_rooms_per_block:
                             max_hotel_rooms_per_block = hotel_rooms_per_block[hotel_block_name]['rooms']
 
-                        filout_hotels_geolocated.write(';'.join(line_elements + [latitude, longitude]))
+                        filout_hotels_geolocated.write(';'.join(line_elements + [str(latitude), str(longitude)]))
             
                 lines_read += 1
+                if lines_read % 1000 == 0:
+                    print(f'Read {lines_read} lines')
 
             except StopIteration:
                 break
