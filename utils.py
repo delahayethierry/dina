@@ -60,4 +60,9 @@ def build_dummy_block():
     return block_name
 
 
+# Writes the headers for the index files to be used for mapping
+def write_index_headers()
+
+    return 'Latitude,Longitude,Year,Month,Index'
+
 

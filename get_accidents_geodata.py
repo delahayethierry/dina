@@ -49,6 +49,11 @@ def get_accidents_geodata(input_file_accidents):
 
     # Open the output file
     with open('map/lighting_needs_index.csv', 'w') as filout:
+
+        # Print headers
+        filout.write(utils.write_index_headers()+ '\n'))
+
+        # Loop over the blocks and fill the lines
         for accident_block in accidents_per_block:
             accident_block_details = accidents_per_block[accident_block]
             accidents_per_block_raw = accident_block_details['Insufficiente'] if 'Insufficiente' in accident_block_details else 0
