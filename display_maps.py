@@ -25,10 +25,10 @@ def createHeatMapWithTimeFromIndexFile(indexFile):
     index_df['Longitude'] = index_df['Longitude'].astype(float)
 
     # Filter the data file for rows, then columns to display 2020 data only
-    heatmap_index_df = index_df[index_df['Year']=='2020'] 
+    #heatmap_index_df = index_df[index_df['Year']=='2020'] 
     #heatmap_index_df = index_df[['Latitude', 'Longitude']]
 
-
+    heatmap_index_df = index_df
 
     #Prepare the Data Frame to generate the heatmap
     heatmap_index_df['Index'] = heatmap_index_df['Index'].astype(float)
@@ -42,7 +42,7 @@ def createHeatMapWithTimeFromIndexFile(indexFile):
     print(heat_data)
     # Plot data on the map
     #heatMapIndex = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep'] #we are using 2020 data so datasets stops in Sep 2020
-    heatmap_from_index = plugins.HeatMapWithTime(heat_data,auto_play=False,min_opacity = 0.05, max_opacity=0.3, use_local_extrema = True, gradient={0: 'lightcyan', 0.2: 'lime', 0.9: 'red'}, radius = 150)
+    heatmap_from_index = plugins.HeatMapWithTime(heat_data, auto_play=False, min_opacity = 0.05, radius = 175, max_opacity=0.3, use_local_extrema = True, gradient={0.0: 'lightgreen', 0.7: 'orange', 1.0: 'red'})
   
 
     return heatmap_from_index
@@ -54,7 +54,8 @@ def createHeatMapWithTimeFromIndexFile(indexFile):
 def createMap(filename, mapname):
     #Define coordinates of where we want to center our map (here, Roma in Italy)
     city_coords = [41.902782,  12.496366] 
-    city_map = folium.Map(location = city_coords, zoom_start = 13)
+    city_map = folium.Map(location = city_coords, zoom_start = 14, min_zoom=13, max_zoom=15)
+    folium.TileLayer('cartodbpositron').add_to(city_map)
     createHeatMapWithTimeFromIndexFile(filename).add_to(city_map)
     folium.LayerControl().add_to(city_map)
 
