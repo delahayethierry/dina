@@ -100,7 +100,7 @@ def get_hotel_geodata(input_file_hotels):
         # Loop over the blocks and fill the lines
         for hotel_block in hotel_rooms_per_block:
             hotel_rooms_block_details = hotel_rooms_per_block[hotel_block]
-            hotel_rooms_per_block_index = math.floor((hotel_rooms_block_details['rooms'] / max_hotel_rooms_per_block) * 10)
+            hotel_rooms_per_block_index = (hotel_rooms_block_details['rooms'] / max_hotel_rooms_per_block) * 10
             line_out_elements = [str(i) for i in [hotel_rooms_block_details['latitude'], hotel_rooms_block_details['longitude'], year, month, hotel_rooms_per_block_index]]
             filout.write(','.join(line_out_elements) + '\n')
             lines_written += 1
