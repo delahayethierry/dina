@@ -39,10 +39,9 @@ def createHeatMapWithTimeFromIndexFile(indexFile):
     for _, d in heatmap_index_df.groupby('Month'):
         heat_data.append([[row['Latitude'], row['Longitude'], row['Index']] for _, row in d.iterrows()])
     
-    print(heat_data)
     # Plot data on the map
     #heatMapIndex = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep'] #we are using 2020 data so datasets stops in Sep 2020
-    heatmap_from_index = plugins.HeatMapWithTime(heat_data, auto_play=False, min_opacity = 0.05, radius = 175, max_opacity=0.3, use_local_extrema = True, gradient={0.0: 'lightgreen', 0.7: 'orange', 1.0: 'red'})
+    heatmap_from_index = plugins.HeatMapWithTime(heat_data, auto_play=False, min_opacity = 0.05, radius = 175, max_opacity=0.3, use_local_extrema = True, gradient={0.0: 'lime', 0.7: 'orange', 1.0: 'red'})
   
 
     return heatmap_from_index

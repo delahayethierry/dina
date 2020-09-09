@@ -1,15 +1,6 @@
 
 <h3 align="center">DINA - Data-driven Implicit Needs Alanyzer</h3>
 
-<div align="center">
-
-[![Status](https://img.shields.io/badge/status-active-success.svg)]()
-[![GitHub Issues](https://img.shields.io/github/issues/kylelobo/The-Documentation-Compendium.svg)](https://github.com/delahayethierry/dina/issues)
-[![GitHub Pull Requests](https://img.shields.io/github/issues-pr/kylelobo/The-Documentation-Compendium.svg)](https://github.com/delahayethierry/dina/pulls)
-
-
-</div>
-
 ---
 
 <p align="center"> A tool which leverages Public Administration Open Data to provide cities with actionable insights about what citizens implicitly need in terms of seciruty, lighting and connectivity
