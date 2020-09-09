@@ -26,9 +26,9 @@ def get_hotel_geodata(input_file_hotels):
     # Dummy year and month variables
     year = '2020'
     month = '01'
-    
-    # General variables
-    geolocation_url = 'https://geocode.search.hereapi.com/v1/geocode'
+
+    # Toggles whether the input is geolocalized
+    geolocalized_input = False
     
     # Open the hotels file
     with open(input_file_hotels) as filin_hotels, open('output_data/hotels_geolocated.csv', 'w') as filout_hotels_geolocated:
@@ -37,36 +37,36 @@ def get_hotel_geodata(input_file_hotels):
             try:
                 line = next(filin_hotels)
 
-                line_elements = line.split(';')
+                line_elements = line.strip('\n').split(';')
 
                 # First line: headers
                 if lines_read == 0:
                     headers = line_elements
+                    if 'longitude'  in headers and 'latitude' in headers:
+                        geolocalized_input = True
             
                 # General case: extract the line and parse the data
                 else:
                     line_dict = utils.extract_line(headers, line_elements)
                     
                     hotel_address = line_dict['INDIRIZZO']
-                    try:
-                        hotel_rooms = int(line_dict['SINGOLE']) + int(line_dict['SINGOLE']) + int(line_dict['DOPPIE']) + int(line_dict['TRIPLE']) + int(line_dict['QUADRUPLE']) + int(line_dict['QUINTUPLE']) + int(line_dict['SESTUPLE'])
-                    except:
-                        hotel_rooms = 0
+                    hotel_rooms = 0
+                    for room_type in ['SINGOLE','DOPPIE','TRIPLE','QUADRUPLE','QUINTUPLE','SESTUPLE']:
+                        if len(line_dict[room_type]) > 0:
+                            hotel_rooms += int(line_dict[room_type])
 
                     # Build the full address line
                     address_query = ', '.join([hotel_address, CITY_NAME, COUNTRY_NAME])
                     print(f'Parsed line: {hotel_address} - {hotel_rooms}')
                     
-                    # Build the geolocation request
-                    leg_data_json = {
-                        "q": address_query, 
-                        'apikey': HERE_API_KEY
-                    }
-                    response = requests.get(geolocation_url, params=leg_data_json)
-                    response_json = json.loads(response.text)
-                    if len(response_json['items']) > 0:
-                        longitude = response_json['items'][0]['position']['lng']
-                        latitude = response_json['items'][0]['position']['lat']
+                    if geolocalized_input:
+                        latitude = line_dict['latitude']
+                        longitude = line_dict['longitude']
+                        geolocalization_success = True
+                    else:
+                        geolocalization_success, latitude, longitude = query_geolocalization(hotel_address)
+
+                    if geolocalization_success:
                         hotel_block_details = utils.extract_block_float(longitude, latitude)
                         hotel_block_name = hotel_block_details['name']
                     
@@ -78,7 +78,9 @@ def get_hotel_geodata(input_file_hotels):
                         if hotel_rooms_per_block[hotel_block_name]['rooms'] > max_hotel_rooms_per_block:
                             max_hotel_rooms_per_block = hotel_rooms_per_block[hotel_block_name]['rooms']
 
-                        filout_hotels_geolocated.write(';'.join(line_elements + [str(latitude), str(longitude)]))
+                        # Save geolocalization if needed to avoid duplicate API calls
+                        if not geolocalized_input:
+                            filout_hotels_geolocated.write(';'.join(line_elements + [str(latitude), str(longitude)]))
             
                 lines_read += 1
                 if lines_read % 1000 == 0:
@@ -114,11 +116,40 @@ def get_hotel_geodata(input_file_hotels):
 
 
 
+def query_geolocalization(hotel_address):
+
+    # General variables
+    geolocation_url = 'https://geocode.search.hereapi.com/v1/geocode'
+
+    # Build the full address line
+    address_query = ', '.join([hotel_address, CITY_NAME, COUNTRY_NAME])
+    
+    # Build the geolocation request
+    address_query_params = {
+        "q": address_query, 
+        'apikey': HERE_API_KEY
+    }
+    response = requests.get(geolocation_url, params=address_query_params)
+    response_json = json.loads(response.text)
+
+    # If response successful, fill the coordinates. Else, put dummy values
+    if len(response_json['items']) > 0:
+        geolocalization_success = True
+        longitude = response_json['items'][0]['position']['lng']
+        latitude = response_json['items'][0]['position']['lat']
+    else:
+        geolocalization_success = False
+        longitude = -1
+        latitude = -1
+
+    return geolocalization_success, latitude, longitude
+
+
 
 
 # Module execution: launch main method
 if __name__ == '__main__':
     
-    input_file_hotels = 'input_data/hotel_locations.csv'
+    input_file_hotels = 'input_data/hotel_locations_geolocalized.csv'
     get_hotel_geodata(input_file_hotels)
 
