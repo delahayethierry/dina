@@ -71,20 +71,21 @@ You need to install:
 1. a recent version of Python (see [for instance this package for Windows](https://www.python.org/downloads/release/python-385/))
 2. the pip tool in order to install Python packages (see [installation guide](https://www.liquidweb.com/kb/install-pip-windows/))
 
-Once pip is installed, download the requested python packages (folium for maps display, pandas for csv files processing) by opening a command line and typing
+Once pip is installed, run the following command to downloadand install the requested python packages (folium for maps display, pandas for csv files processing)  line and typing
 
-`$ pip install folium`
-`$ pip install pandas`
+`$ pip install -r requirements.txt`
+
 
 
 ##  Usage <a name="usage"></a>
 
 ## Run the DINA Open Data Ingestion module
 
-The first step is to process the input data from open data portals. This is done with the process_input_data block:
+The first (optional) step is to process the input data from Open Data portals. This is done with the process_input_data block:
 `$ python process_input_data.py`
 
-This will generate some data files in the output_data folder. These datasets are already included in the repository as some of them require heavy processing to be created. In particular, the hotel csv needs to call a geocoding API for each of the 90,000 hotels in Rome, which can take a long time
+This will generate some data files in the output_data folder. 
+Note: **this step is not required to start testing the solution** as some datasets requesting processing have already been generated and included in the repository. Indeed, some of them require heavy processing to be created. In particular, the hotel csv needs to call a geocoding API for each of the 90,000 hotels in Rome, which can take a long time. 
 
 From the files in the output_data, the indices can be generated. These are weighted averages of a subset of data indicators, as defined in the main method of create_indexes.py . To generate the indices, run:
 `$ python create_indexes.py`
@@ -93,8 +94,7 @@ From the files in the output_data, the indices can be generated. These are weigh
 ## Generate and display the DINA Heat Maps (Lighting Needs Index, Security Needs Index, Connectivity Needs Index)
 
 Open a command line and go to the folder where DINA has been downloaded and commands:
-`python` 
-`display_maps`
+`$ python display_maps.py`
 
 
 It will generate 3 html files containing the maps in the sub-folder ./map/ and try to open them with a web browser:
@@ -107,15 +107,15 @@ It will generate 3 html files containing the maps in the sub-folder ./map/ and t
 
 ##  Built Using <a name = "built_using"></a>
 
-- [xx](https://www.mongodb.com/) - xx
-- [xx](https://expressjs.com/) - xx
-- [xx](https://vuejs.org/) - xx
-- [xx](https://nodejs.org/en/) - xx
+- [Folium](https://python-visualization.github.io/folium/) - Maps generation
+- [Pandas](https://pandas.pydata.org/) - CSV Files analysis
+- [Here Geolocation APIs](https://developer.here.com/) - Geocoding of Hotels/Accomodation data
 
 
+## Datasets used in the scope of this proof of concept
 
-##  Acknowledgements <a name = "acknowledgement"></a>
+Dataset Name | Description | Provider | Resource | Period Covered | Comments
+-------------|-------------|----------|----------|----------------|----------
+[Hotels/Accomodation Data](./input_data/hotel_locations.csv) | List of accommodation facilities in Rome Capital in 2020.  | [Roma Open Data Portal](https://dati.comune.roma.it) | [Roma Capitale accommodation facilities in 2020](https://dati.comune.roma.it/catalog/dataset/d865) | 01/2020 | We assumed that number of accomodations did not change over time but an improvement will be to aggregate all months
+[Accidents Data](./input_data/csv_incidenti_merge_20192020.csv) | The dataset contains the list of road accidents that occurred in the territory of Roma Capitale in the year 2019. The dataset contains all the road accidents in which a patrol of any Group of the Roma Capitale Local Police intervened. Therefore, only incidents in which the parties involved have reached a conciliation are excluded. The dataset does not include the accidents that occurred on the Grande Raccordo Anulare of Roma Capitale. | [Roma Open Data Portal](https://dati.comune.roma.it) | [Road accidents in the territory of Roma Capitale - Year 2019-2020](https://dati.comune.roma.it/catalog/dataset/d852) | 01-2019 - 12/2019, 01/2020 - 02/2020 | we merged monthly data files into 1 consolidated file
 
-- Hat tip to anyone whose code was used
-- Inspiration
-- [Polygons of the Municipalities of Rome from the Metropolitan City of Rome Capital](http://websit.cittametropolitanaroma.it/UrlDownload.aspx?i=16)
