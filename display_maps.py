@@ -25,10 +25,10 @@ def createHeatMapWithTimeFromIndexFile(indexFile):
     index_df['Longitude'] = index_df['Longitude'].astype(float)
 
     # Filter the data file for rows, then columns to display 2020 data only
-    heatmap_index_df = index_df[index_df['Year']=='2020'] 
+    #heatmap_index_df = index_df[index_df['Year']=='2020'] 
     #heatmap_index_df = index_df[['Latitude', 'Longitude']]
 
-
+    heatmap_index_df = index_df
 
     #Prepare the Data Frame to generate the heatmap
     heatmap_index_df['Index'] = heatmap_index_df['Index'].astype(float)
@@ -42,7 +42,7 @@ def createHeatMapWithTimeFromIndexFile(indexFile):
     print(heat_data)
     # Plot data on the map
     #heatMapIndex = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep'] #we are using 2020 data so datasets stops in Sep 2020
-    heatmap_from_index = plugins.HeatMapWithTime(heat_data,auto_play=False,min_opacity = 0.05, max_opacity=0.3, use_local_extrema = True, gradient={0: 'lightcyan', 0.2: 'lime', 0.9: 'red'}, radius = 150)
+    heatmap_from_index = plugins.HeatMapWithTime(heat_data,auto_play=False,min_opacity = 0.05, max_opacity=0.3, use_local_extrema = True, gradient={0.1: 'lightcyan', 0.4: 'lime', 0.9: 'red'}, radius = 150)
   
 
     return heatmap_from_index
