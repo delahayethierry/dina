@@ -11,5 +11,8 @@ municipi_lookup = "./input_data/municipi_lookup.csv"
 #Name of the city for the proof of concept
 city_name = "Roma"
 #Size of the blocks (grid to map a city): width & length in meters
-block_width = 1000
-block_height = 1000
+block_width = 800
+block_height = 800
+#File where should be generated the city grid geojson file
+city_grid_geojson_file='./input_data/city_grid.geojson'
+city_grid_csv_file='./input_data/city_grid.csv'

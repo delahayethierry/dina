@@ -1,6 +1,7 @@
 import math
 import folium
 import config
+import pyproj
 import pandas as pd  # data processing, CSV file I/O (e.g. pd.read_csv)
 from pyproj import Transformer
 import shapely.geometry
@@ -9,6 +10,7 @@ from shapely.geometry import Polygon
 import geopandas as gpd
 
 administrative_subdivision_lookup_df = pd.read_csv(config.municipi_lookup,names = ['data', 'id', 'display_name'])
+city_grid_df = pd.read_csv(config.city_grid_csv_file)
 
 
 # Generate city_grid.geojson file based on a bounding box (SW-NE Coordinates to cover) and width/height
@@ -19,27 +21,36 @@ def generate_city_grid():
     administrative_subdivisions_shapes_bounds = folium.GeoJson(config.administrative_subdivision_geojson_file).get_bounds()
     print('Generating a city grid with blocks of ',config.block_width,'meters x ',config.block_height,' meters, using this bounding box: ',administrative_subdivisions_shapes_bounds)
     # Set up projections
-    # 'epsg:3857' = metric; same as EPSG:900913
-    transformer = Transformer.from_crs('epsg:4326', 'epsg:3857')
-    transformer_back = Transformer.from_crs(
-        'epsg:3857', 'epsg:4326')    # go back to 'epsg:4326'
+    transformer = Transformer.from_crs('epsg:4326', 'epsg:3857') # transformer to translate epsh:4326 to epsg:3857 = metric; same as EPSG:900913
+    transformer_back = Transformer.from_crs('epsg:3857', 'epsg:4326') # transformer to transform from metric to epsg:4326
+    
     # Create corners of rectangle to be transformed to a grid
     sw = shapely.geometry.Point(administrative_subdivisions_shapes_bounds[0])
     ne = shapely.geometry.Point(administrative_subdivisions_shapes_bounds[1])
 
     # Project corners to target projection
-    transformed_sw = transformer.transform(
-        sw.x, sw.y)  # Transform NW point to 3857
+    transformed_sw = transformer.transform(sw.x, sw.y)  # Transform NW point to 3857
     transformed_ne = transformer.transform(ne.x, ne.y)  # .. same for SE
 
+    # Read the GeoJson file downloaded from Public Administration Open Data portals, and which contains the shapes 
+    # of administrative subdivisions like Municipi in Roma
     municipi_df = gpd.read_file(config.administrative_subdivision_geojson_file)
-    
 
     i = 0
-    # Iterate over 2D area
-    gridpoints = []
+    
+    #List which will be used as columns/properties in the GeoJsona and CSV files to be generated
     properties_block_ID = []
     properties_administrative_subdivision = []
+    
+    #List of geometries representing the polygones (= rectangles) to define the city blocks
+    gridpoints = []
+    
+    #Lists to generate the csv file which will bake subsequent processes easier and optimized (like )
+    blocks_sw_longitude = []
+    blocks_sw_latitude = []
+    blocks_ne_longitude = []
+    blocks_ne_latitude = []
+    
     x = transformed_sw[0]
     while x < transformed_ne[0]:
         y = transformed_sw[1]
@@ -55,6 +66,12 @@ def generate_city_grid():
                 [grid_ne[1], grid_ne[0]],
                 [grid_nw[1], grid_nw[0]]])
             gridpoints.append(block_polygon)
+            
+            blocks_sw_longitude.append(grid_sw[1])
+            blocks_sw_latitude.append(grid_sw[0])
+            blocks_ne_longitude.append(grid_ne[1])
+            blocks_ne_latitude.append(grid_ne[0])
+            
             administrative_subdivision = ''
             for index, row in municipi_df.iterrows():
                 if block_polygon.centroid.within(row['geometry']):
@@ -66,12 +83,18 @@ def generate_city_grid():
             y += config.block_height
         x += config.block_width
 
-    grid = gpd.GeoDataFrame({'geometry': gridpoints, 'block_ID': properties_block_ID,
+    grid_geojson = gpd.GeoDataFrame({'geometry': gridpoints, 'block_ID': properties_block_ID,
                              'administrative_subdivision': properties_administrative_subdivision}, crs='EPSG:4326')
-    grid.to_file("./input_data/city_grid.geojson", driver='GeoJSON')
-    print ('City Grid save in ./input_data/city_grid.geojson, ',str(i-1),' blocks created')
-    return grid
+    grid_geojson.to_file(config.city_grid_geojson_file, driver='GeoJSON')
+    print ('City Grid save in GeoJson format in ', config.city_grid_geojson_file,", ",str(i-1),' blocks created')
 
+    grid_csv = pd.DataFrame({'block_ID': properties_block_ID, 'administrative_subdivision': properties_administrative_subdivision, 
+                            'sw_longitude': blocks_sw_longitude,'sw_latitude': blocks_sw_latitude,
+                            'ne_longitude': blocks_ne_longitude,'ne_latitude': blocks_ne_latitude })
+    grid_csv.to_csv(config.city_grid_csv_file, index=False)
+    print ('City Grid save in CSV format in ', config.city_grid_csv_file,", ",str(i-1),' blocks created')
+
+    
 # Extracts a line as a dictionary. Assumes the number of elements in the line is the same as the number of headers
 def extract_line(headers, line_elements):
     
@@ -104,16 +127,46 @@ def extract_block(longitude, latitude):
         latitude = latitude.replace(',','.')
     
         # Build the block name
-        block = extract_block_float(longitude, latitude)
+        # block = extract_block_float(longitude, latitude)
+        block = get_city_block(longitude, latitude)
     else:
-        block = build_dummy_block()
+        #block = build_dummy_block()
+        block = build_dummy_city_block()
     
     return block
 
 
-# Maps a longitude, latitude to a block. This method can be replaced to whatever block is needed (more/less granular, or any function of longitude, latitude)
-def extract_block_float(longitude, latitude):
+def get_city_block(longitude, latitude):
 
+    longitude_float = float(longitude)
+    latitude_float = float(latitude)
+    inblock_df = city_grid_df[(city_grid_df.sw_longitude <= longitude_float) & (city_grid_df.ne_longitude >= longitude_float) 
+                              & (city_grid_df.sw_latitude <= latitude_float) & (city_grid_df.ne_latitude >= latitude_float)]
+    if len(inblock_df.index) > 0:
+        block_name = {
+        'block_ID' : inblock_df['block_ID'].iloc[0],
+        'administrative_subdivision' : inblock_df['administrative_subdivision'].iloc[0]
+        }
+        block_name['name'] = inblock_df['block_ID'].iloc[0]
+    else:
+        block_name = build_dummy_city_block()
+    return block_name
+
+# Builds a dummy city block for cases where we do not have the coordinates
+def build_dummy_city_block():
+
+    block_name = {
+        'block_ID' : -1,
+        'administrative_subdivision' : 0
+    }
+    block_name['name'] = ''
+    
+    return block_name
+
+# Maps a longitude, latitude to a block. This method can be replaced to whatever block is needed (more/less granular, or any function of longitude, latitude)
+# Depreciated
+def extract_block_float(longitude, latitude):
+    print('Function is depreciated (uses the old city block management). You should use get_city_block instead')
     longitude_float = float(longitude)
     latitude_float = float(latitude)
 
@@ -128,7 +181,7 @@ def extract_block_float(longitude, latitude):
 
 # Builds a dummy block for cases where we do not have the coordinates
 def build_dummy_block():
-
+    print('Function is depreciated (uses the old city block management). You should use build_dummy_city_block instead')
     block_name = {
         'longitude' : 0,
         'latitude' : 0
@@ -141,7 +194,7 @@ def build_dummy_block():
 # Writes the headers for the index files to be used for mapping
 def get_index_headers():
 
-    return ['Latitude','Longitude','Year','Month'] #,'Index']
+    return ['block_ID','administrative_subdivision','Year','Month'] #,'Index']
 
 
 # Writes the headers for the index files to be used for mapping. Replaces the last column with the datasource name
@@ -153,3 +206,5 @@ def write_index_headers(datasource_name):
 # Module execution: launch main method
 if __name__ == '__main__':
     generate_city_grid()
+    
+    
