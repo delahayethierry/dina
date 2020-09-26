@@ -138,17 +138,20 @@ def extract_block(longitude, latitude):
 
 def get_city_block(longitude, latitude):
 
-    longitude_float = float(longitude)
-    latitude_float = float(latitude)
-    inblock_df = city_grid_df[(city_grid_df.sw_longitude <= longitude_float) & (city_grid_df.ne_longitude >= longitude_float) 
-                              & (city_grid_df.sw_latitude <= latitude_float) & (city_grid_df.ne_latitude >= latitude_float)]
-    if len(inblock_df.index) > 0:
-        block_name = {
-        'block_ID' : inblock_df['block_ID'].iloc[0],
-        'administrative_subdivision' : inblock_df['administrative_subdivision'].iloc[0]
-        }
-        block_name['name'] = inblock_df['block_ID'].iloc[0]
-    else:
+    try:
+        longitude_float = float(longitude)
+        latitude_float = float(latitude)
+        inblock_df = city_grid_df[(city_grid_df.sw_longitude <= longitude_float) & (city_grid_df.ne_longitude >= longitude_float) 
+                                & (city_grid_df.sw_latitude <= latitude_float) & (city_grid_df.ne_latitude >= latitude_float)]
+        if len(inblock_df.index) > 0:
+            block_name = {
+            'block_ID' : inblock_df['block_ID'].iloc[0],
+            'administrative_subdivision' : inblock_df['administrative_subdivision'].iloc[0]
+            }
+            block_name['name'] = inblock_df['block_ID'].iloc[0]
+        else:
+            block_name = build_dummy_city_block()
+    except:
         block_name = build_dummy_city_block()
     return block_name
 

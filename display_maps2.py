@@ -3,6 +3,7 @@ import os
 import sys
 import webbrowser
 from math import ceil
+import datetime
 
 import folium
 import numpy as np
@@ -72,10 +73,97 @@ def createMap(filename, mapname):
     print("Saving the generated map in: " + mapFileName)
     webbrowser.open(mapFileName, new=2)
 
+def generate_blocks_for_hotels():
+    hotels_before_df = pd.read_csv(
+        './output_data/hotels.csv', names=['Latitude', 'Longitude', 'Year', 'Month', 'Hotels'])
+    print(hotels_before_df.head(5))
+    block_names = [utils.extract_block(x, y)
+                   for x, y in zip(hotels_before_df['Longitude'], hotels_before_df['Latitude'])]
+    hotels_after_df = pd.DataFrame(block_names)
+    
+    hotels_after_df['Year'] = hotels_before_df['Year'].values
+    hotels_after_df['Month'] = hotels_before_df['Month'].values
+    hotels_after_df['Hotels'] = hotels_before_df['Hotels'].values
+    
+    print(hotels_after_df.head(5))
+    hotels_after_df.to_csv('output_data/hotels2.csv')
+    
+
+
+def generate_blocks_for_hotels2():
+    hotels_per_block = {}
+    max_hotels_per_block = 0
+
+    # General stats
+    lines_read = 0
+    lines_written = 0
+     # Open the accidents file
+    with open('./output_data/hotels.csv') as filin_hotels:
+
+        for line in filin_hotels:
+            line_elements = line.split(',')
+
+            # First line: headers
+            if lines_read == 0:
+                headers = line_elements
+
+            # General case: extract the line and parse the data
+            else:
+                line_dict = utils.extract_line(headers, line_elements)
+                hotels_block_details = utils.extract_block(
+                    line_dict['Longitude'], line_dict['Latitude'])
+                hotels_block_name = hotels_block_details['name']
+                
+                try:
+                    
+                    hotel_year = str(line_dict['Year'])
+                    hotel_month = str(line_dict['Month'])
+                    hotel_number = str(line_dict['Hotels'])
+                except:
+                    hotel_year = '-1'
+                    hotel_month = '-1'
+                    hotel_number = '0'
+                hotels_year_month = (hotel_year, hotel_month)
+
+                # Add the hotel to the statistics
+                if hotels_block_name not in hotels_per_block:
+                    hotels_per_block[hotels_block_name] = {}
+                if hotels_year_month not in hotels_per_block[hotels_block_name]:
+                    hotels_per_block[hotels_block_name][hotels_year_month] = hotels_block_details
+                    hotels_per_block[hotels_block_name][hotels_year_month]['Hotels'] = hotel_number
+                
+
+            lines_read += 1
+
+
+    # Open the output file
+    with open('output_data/hotels2.csv', 'w') as filout:
+
+        # Print headers
+        filout.write(utils.write_index_headers('hotels') + '\n')
+
+        # Loop over the blocks and fill the lines
+        for hotel_block in hotels_per_block:
+            for hotels_year_month in hotels_per_block[hotel_block]:
+                hotels_block_details = hotels_per_block[hotel_block][hotels_year_month]
+                hotels_per_block_index = float(hotels_block_details['Hotels']) 
+                line_out_elements = [str(i) for i in [hotels_block_details['block_ID'], hotels_block_details['administrative_subdivision'],
+                                                      hotels_year_month[0], hotels_year_month[1], hotels_per_block_index]]
+                filout.write(','.join(line_out_elements) + '\n')
+                lines_written += 1
+
+    # Print some stats
+    print(f'Read lines: {lines_read}')
+    print(f'Written lines: {lines_written}')
+
 
 # Module execution: launch main method
 if __name__ == '__main__':
+    generate_blocks_for_hotels()
+    
+    '''
     print("Folium Version: " + folium.__version__)
+    
 
     # Create maps
     #createMap(security_needs_index_file ,'Security Needs Index')
@@ -136,3 +224,4 @@ if __name__ == '__main__':
     city_map.save(mapFileName)
     print("Saving the generated map in: " + mapFileName)
     webbrowser.open(mapFileName, new=2)
+    '''
