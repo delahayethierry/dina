@@ -11,10 +11,10 @@ def create_indexes():
     indexes = {
         'lighting': {
             'accidents': 0.5,
-            'hotels': 0.5
+            'Hotels': 0.5
         },
         'connectivity': {
-            'hotels': 1
+            'Hotels': 1
         },
         'security': {
             'accidents': 1

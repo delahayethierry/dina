@@ -1,0 +1,33 @@
+data,id,display_name
+Municipio I (ex I + ex XVII),1,Municipio I
+Municipio II (ex II + ex III),2,Municipio II
+Municipio III (ex IV),3,Municipio III
+Municipio IV (ex V),4,Municipio IV
+Municipio V (ex VI + ex VII),5,Municipio V
+Municipio VI (ex VIII),6,Municipio VI
+Municipio VII (ex IX + ex X),7,Municipio VII
+Municipio VIII (ex XI),8,Municipio VIII
+Municipio IX (ex XII),9,Municipio IX
+Municipio X (ex XIII),10,Municipio X
+Municipio XI (ex XV),11,Municipio XI
+Municipio XII (ex XVI),12,Municipio XII
+Municipio XIII (ex XVIII),13,Municipio XIII
+Municipio XIV (ex XIX),14,Municipio XIV
+Municipio XV (ex XX),15,Municipio XV
+Municipio I (ex Mun I),1,Municipio I
+Municipio I (ex Mun XVII),1,Municipio I
+Municipio II (ex Mun II),2,Municipio II
+Municipio II (ex Mun III),2,Municipio II
+Municipio III (ex Mun IV),3,Municipio III
+Municipio IV (ex Mun V),4,Municipio IV
+Municipio IX (ex Mun XII),9,Municipio IX
+Municipio V (ex Mun VI),5,Municipio V
+Municipio V (ex Mun VII),5,Municipio V
+Municipio VI (ex Mun VIII),6,Municipio VI
+Municipio VII (ex Mun IX),7,Municipio VII
+Municipio X (ex Mun XIII),10,Municipio X
+Municipio XI (ex Mun XV),11,Municipio XI
+Municipio XII (ex Mun XVI),12,Municipio XII
+Municipio XIII (ex Mun XVIII),13,Municipio XIII
+Municipio XIV (ex Mun XIX),14,Municipio XIV
+Municipio XV (ex Mun XX),15,Municipio XV
