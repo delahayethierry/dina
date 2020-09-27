@@ -57,7 +57,7 @@ def get_hotel_geodata(input_file_hotels):
 
                     # Build the full address line
                     address_query = ', '.join([hotel_address, CITY_NAME, COUNTRY_NAME])
-                    print(f'Parsed line: {hotel_address} - {hotel_rooms}')
+                    #print(f'Parsed line: {hotel_address} - {hotel_rooms}')
                     
                     if geolocalized_input:
                         latitude = line_dict['latitude']
@@ -67,7 +67,7 @@ def get_hotel_geodata(input_file_hotels):
                         geolocalization_success, latitude, longitude = query_geolocalization(hotel_address)
 
                     if geolocalization_success:
-                        hotel_block_details = utils.extract_block_float(longitude, latitude)
+                        hotel_block_details = utils.get_city_block(longitude, latitude)
                         hotel_block_name = hotel_block_details['name']
                     
                         # Add the hotel to the statistics
