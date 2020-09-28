@@ -60,9 +60,10 @@ def get_wifi_geodata(input_file_wifi):
                     address_street_number = line_dict['CIVICO']
                     address_full = f'{address_street_number}, {address_street_type} {address_street_name}'
 
-                    # Build the full address line
-                    
-                    if geolocalized_input:
+                    # If no address, do not geolocalize. If there is, try the cache
+                    if address_street_name == '':
+                        geolocalization_success = False
+                    elif geolocalized_input:
                         latitude = line_dict['latitude']
                         longitude = line_dict['longitude']
                         geolocalization_success = True
