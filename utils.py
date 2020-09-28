@@ -215,7 +215,7 @@ def query_geolocalization(address, city_name, country_name, here_api_key):
     response_json = json.loads(response.text)
 
     # If response successful, fill the coordinates. Else, put dummy values
-    if len(response_json['items']) > 0:
+    if 'items' in response_json and len(response_json['items']) > 0:
         geolocalization_success = True
         longitude = response_json['items'][0]['position']['lng']
         latitude = response_json['items'][0]['position']['lat']
