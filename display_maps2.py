@@ -156,15 +156,7 @@ if __name__ == '__main__':
         show=True
     )
     
-   tsgjson = TimestampedGeoJson(
-        {'type': 'FeatureCollection', 'features': features},
-        period='P1M',
-        duration='P1M',
-        auto_play=False,
-        loop=False,
-        loop_button=True,
-        date_options='YYYY/MM/DD',
-    ).add_to(m)
+
 
     map_grid.geojson.add_child( folium.features.GeoJsonTooltip(['administrative_subdivision']))
 
