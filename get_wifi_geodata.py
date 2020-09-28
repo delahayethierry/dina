@@ -30,7 +30,7 @@ def get_wifi_geodata(input_file_wifi):
     # Toggles whether the input is geolocalized
     geolocalized_input = False
 
-    # TODO: cache the street name / number lat/long so we don't query the same address twice
+    # Cache the street name / number lat/long so we don't query the same address twice
     addresses_coordinates = {}
     
     # Open the wifi file
@@ -47,6 +47,8 @@ def get_wifi_geodata(input_file_wifi):
                     headers = line_elements
                     if 'longitude'  in headers and 'latitude' in headers:
                         geolocalized_input = True
+                    else:
+                        filout_wifi_geolocated.write(';'.join(headers + ['latitude','longitude']))
             
                 # General case: extract the line and parse the data
                 else:
@@ -65,7 +67,7 @@ def get_wifi_geodata(input_file_wifi):
                         longitude = line_dict['longitude']
                         geolocalization_success = True
                     elif address_full in addresses_coordinates:
-                        latitude, longitude = addesses_coordinates[address_full] 
+                        latitude, longitude = addresses_coordinates[address_full] 
                         geolocalization_success = True
                     else:
                         geolocalization_success, latitude, longitude = utils.query_geolocalization(address_full, CITY_NAME, COUNTRY_NAME, HERE_API_KEY)
@@ -89,9 +91,6 @@ def get_wifi_geodata(input_file_wifi):
                             filout_wifi_geolocated.write(';'.join(line_elements + [str(latitude), str(longitude)]))
             
                 lines_read += 1
-                # TODO for test (avoid too many calls dring test)
-                if lines_read == 10:
-                    break
                 if lines_read % 1000 == 0:
                     print(f'Read {lines_read} lines')
 

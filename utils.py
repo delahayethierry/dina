@@ -1,13 +1,16 @@
-import math
-import folium
+
 import config
-import pyproj
+import folium
+import geopandas as gpd
+import json
+import math
 import pandas as pd  # data processing, CSV file I/O (e.g. pd.read_csv)
+import pyproj
 from pyproj import Transformer
+import requests
 import shapely.geometry
 from shapely.geometry import Polygon
 
-import geopandas as gpd
 
 administrative_subdivision_lookup_df = pd.read_csv(config.municipi_lookup,names = ['data', 'id', 'display_name'])
 city_grid_df = pd.read_csv(config.city_grid_csv_file)
