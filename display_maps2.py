@@ -4,13 +4,12 @@ import sys
 import webbrowser
 from math import ceil
 import datetime
-
 import folium
 import numpy as np
 import ogr
 import pandas as pd  # data processing, CSV file I/O (e.g. pd.read_csv)
 import pyproj
-from folium import FeatureGroup, LayerControl, Map, Marker, plugins
+from folium import FeatureGroup, LayerControl, Map, Marker, plugins, TimestampedGeoJson
 
 import config as config
 import utils
@@ -90,78 +89,11 @@ def generate_blocks_for_hotels():
     
 
 
-def generate_blocks_for_hotels2():
-    hotels_per_block = {}
-    max_hotels_per_block = 0
-
-    # General stats
-    lines_read = 0
-    lines_written = 0
-     # Open the accidents file
-    with open('./output_data/hotels.csv') as filin_hotels:
-
-        for line in filin_hotels:
-            line_elements = line.split(',')
-
-            # First line: headers
-            if lines_read == 0:
-                headers = line_elements
-
-            # General case: extract the line and parse the data
-            else:
-                line_dict = utils.extract_line(headers, line_elements)
-                hotels_block_details = utils.extract_block(
-                    line_dict['Longitude'], line_dict['Latitude'])
-                hotels_block_name = hotels_block_details['name']
-                
-                try:
-                    
-                    hotel_year = str(line_dict['Year'])
-                    hotel_month = str(line_dict['Month'])
-                    hotel_number = str(line_dict['Hotels'])
-                except:
-                    hotel_year = '-1'
-                    hotel_month = '-1'
-                    hotel_number = '0'
-                hotels_year_month = (hotel_year, hotel_month)
-
-                # Add the hotel to the statistics
-                if hotels_block_name not in hotels_per_block:
-                    hotels_per_block[hotels_block_name] = {}
-                if hotels_year_month not in hotels_per_block[hotels_block_name]:
-                    hotels_per_block[hotels_block_name][hotels_year_month] = hotels_block_details
-                    hotels_per_block[hotels_block_name][hotels_year_month]['Hotels'] = hotel_number
-                
-
-            lines_read += 1
-
-
-    # Open the output file
-    with open('output_data/hotels2.csv', 'w') as filout:
-
-        # Print headers
-        filout.write(utils.write_index_headers('hotels') + '\n')
-
-        # Loop over the blocks and fill the lines
-        for hotel_block in hotels_per_block:
-            for hotels_year_month in hotels_per_block[hotel_block]:
-                hotels_block_details = hotels_per_block[hotel_block][hotels_year_month]
-                hotels_per_block_index = float(hotels_block_details['Hotels']) 
-                line_out_elements = [str(i) for i in [hotels_block_details['block_ID'], hotels_block_details['administrative_subdivision'],
-                                                      hotels_year_month[0], hotels_year_month[1], hotels_per_block_index]]
-                filout.write(','.join(line_out_elements) + '\n')
-                lines_written += 1
-
-    # Print some stats
-    print(f'Read lines: {lines_read}')
-    print(f'Written lines: {lines_written}')
-
-
 # Module execution: launch main method
 if __name__ == '__main__':
-    generate_blocks_for_hotels()
+ 
     
-    '''
+    
     print("Folium Version: " + folium.__version__)
     
 
@@ -202,18 +134,50 @@ if __name__ == '__main__':
         line_color='blue',
         show=False
     )
-
-    map_grid.geojson.add_child(
-        folium.features.GeoJsonTooltip(['administrative_subdivision'])
+    
+    security_needs_index_df = pd.read_csv(config.security_needs_index_file)
+    security_needs_index_df['Year'] = security_needs_index_df['Year'].astype(str)
+    security_needs_index_df['Month'] = security_needs_index_df['Month'].astype(str)
+    security_needs_index_df['period'] = security_needs_index_df[[
+        'Year', 'Month']].agg('-'.join, axis=1)
+    security_needs_index_df['period'] = pd.to_datetime(
+        security_needs_index_df['period'], errors='coerce', format='%Y-%m')
+    
+    map_grid_security_needs = folium.Choropleth(
+        geo_data='./input_data/city_grid.geojson',
+        name='Security Needs Index',
+        data=security_needs_index_df,
+        columns=['block_ID','Index'],
+        key_on='feature.properties.block_ID',
+        fill_color='BuGn',
+        fill_opacity=0.5,
+        line_opacity=0.1,
+        line_color='green',
+        show=True
     )
+    
+   tsgjson = TimestampedGeoJson(
+        {'type': 'FeatureCollection', 'features': features},
+        period='P1M',
+        duration='P1M',
+        auto_play=False,
+        loop=False,
+        loop_button=True,
+        date_options='YYYY/MM/DD',
+    ).add_to(m)
+
+    map_grid.geojson.add_child( folium.features.GeoJsonTooltip(['administrative_subdivision']))
 
     city_map = folium.Map(location=city_coords, zoom_start=10,
                           min_zoom=9, max_zoom=15, control_scale=True)
     city_map.fit_bounds(municipi_shapes_bounds)
     folium.TileLayer('cartodbpositron').add_to(city_map)
+    folium.TileLayer('cartodbdark_matter').add_to(city_map)
+    folium.TileLayer('Mapbox Control Room').add_to(city_map)
 
     choropleth.add_to(city_map)
     map_grid.add_to(city_map)
+    map_grid_security_needs.add_to(city_map)
 
     folium.LayerControl().add_to(city_map)
 
@@ -224,4 +188,4 @@ if __name__ == '__main__':
     city_map.save(mapFileName)
     print("Saving the generated map in: " + mapFileName)
     webbrowser.open(mapFileName, new=2)
-    '''
+    
