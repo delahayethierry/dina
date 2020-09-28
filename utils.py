@@ -1,13 +1,16 @@
-import math
-import folium
+
 import config
-import pyproj
+import folium
+import geopandas as gpd
+import json
+import math
 import pandas as pd  # data processing, CSV file I/O (e.g. pd.read_csv)
+import pyproj
 from pyproj import Transformer
+import requests
 import shapely.geometry
 from shapely.geometry import Polygon
 
-import geopandas as gpd
 
 administrative_subdivision_lookup_df = pd.read_csv(config.municipi_lookup,names = ['data', 'id', 'display_name'])
 city_grid_df = pd.read_csv(config.city_grid_csv_file)
@@ -192,6 +195,37 @@ def build_dummy_block():
     block_name['name'] = ''
     
     return block_name
+
+
+# Calls the HERE api to get a geolocalization for an address
+def query_geolocalization(address, city_name, country_name, here_api_key):
+
+    # General variables
+    geolocation_url = 'https://geocode.search.hereapi.com/v1/geocode'
+
+    # Build the full address line
+    address_query = ', '.join([address, city_name, country_name])
+    
+    # Build the geolocation request
+    address_query_params = {
+        "q": address_query, 
+        'apikey': here_api_key
+    }
+    response = requests.get(geolocation_url, params=address_query_params)
+    response_json = json.loads(response.text)
+
+    # If response successful, fill the coordinates. Else, put dummy values
+    if len(response_json['items']) > 0:
+        geolocalization_success = True
+        longitude = response_json['items'][0]['position']['lng']
+        latitude = response_json['items'][0]['position']['lat']
+    else:
+        geolocalization_success = False
+        longitude = -1
+        latitude = -1
+
+    return geolocalization_success, latitude, longitude
+
 
 
 # Writes the headers for the index files to be used for mapping
