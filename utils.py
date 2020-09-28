@@ -195,7 +195,7 @@ def build_dummy_block():
 
 
 # Calls the HERE api to get a geolocalization for an address
-def query_geolocalization(address, city_name, country_name):
+def query_geolocalization(address, city_name, country_name, here_api_key):
 
     # General variables
     geolocation_url = 'https://geocode.search.hereapi.com/v1/geocode'
@@ -206,7 +206,7 @@ def query_geolocalization(address, city_name, country_name):
     # Build the geolocation request
     address_query_params = {
         "q": address_query, 
-        'apikey': HERE_API_KEY
+        'apikey': here_api_key
     }
     response = requests.get(geolocation_url, params=address_query_params)
     response_json = json.loads(response.text)

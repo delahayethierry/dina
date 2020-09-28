@@ -64,12 +64,13 @@ def get_wifi_geodata(input_file_wifi):
                         latitude = line_dict['latitude']
                         longitude = line_dict['longitude']
                         geolocalization_success = True
-                    elif address_query in addresses_coordinates:
-                        latitude, longitude = addesses_coordinates[address_query] 
+                    elif address_full in addresses_coordinates:
+                        latitude, longitude = addesses_coordinates[address_full] 
                         geolocalization_success = True
                     else:
-                        geolocalization_success, latitude, longitude = utils.query_geolocalization(address_full, CITY_NAME, COUNTRY_NAME)
-                        addresses_coordinates[address_query] = (latitude, longitude)
+                        geolocalization_success, latitude, longitude = utils.query_geolocalization(address_full, CITY_NAME, COUNTRY_NAME, HERE_API_KEY)
+                        print(f'Geolocalization for {address_full}: {geolocalization_success}, {latitude}, {longitude}')
+                        addresses_coordinates[address_full] = (latitude, longitude)
 
                     if geolocalization_success:
                         wifi_block_details = utils.get_city_block(longitude, latitude)
