@@ -35,20 +35,21 @@ def get_wifi_geodata(input_file_wifi):
     addresses_coordinates = {}
     
     # Open the wifi file
-    with open(input_file_wifi) as filin_wifi, open('output_data/wifi_geolocated.csv', 'w') as filout_wifi_geolocated:
-        
+    with open(input_file_wifi) as filin_wifi:
+
         while True:
             try:
                 line = next(filin_wifi)
 
                 line_elements = line.strip('\n').split(';')
 
-                # First line: headers
+                # First line: headers - Only open the geolocalized file if the input is not geolocalized
                 if lines_read == 0:
                     headers = line_elements
                     if 'longitude'  in headers and 'latitude' in headers:
                         geolocalized_input = True
                     else:
+                        filout_wifi_geolocated = open('output_data/wifi_geolocated.csv', 'w')
                         filout_wifi_geolocated.write(';'.join(headers + ['latitude','longitude']) + '\n')
             
                 # General case: extract the line and parse the data
@@ -110,6 +111,10 @@ def get_wifi_geodata(input_file_wifi):
             except UnicodeDecodeError:
                 print(f'Error: could not decode line {lines_read}')
 
+        # Close the geolocalized file if needed
+        if not geolocalized_input:
+            filout_wifi_geolocated.close()
+
     # Open the output file
     with open('output_data/wifi.csv', 'w') as filout:
 
@@ -139,6 +144,7 @@ def get_wifi_geodata(input_file_wifi):
 # Module execution: launch main method
 if __name__ == '__main__':
     
-    input_file_wifi = 'input_data/wifi_usage_rome_2020.csv'
+    #input_file_wifi = 'input_data/wifi_usage_rome_2020.csv'
+    input_file_wifi = 'output_data/wifi_geolocated.csv'
     get_wifi_geodata(input_file_wifi)
 
