@@ -60,6 +60,12 @@ def get_wifi_geodata(input_file_wifi):
                     address_street_number = line_dict['CIVICO']
                     address_full = f'{address_street_number}, {address_street_type} {address_street_name}'
 
+                    # Parse the date
+                    session_date = datetime.strptime(timeStamp,"%d/%m/%Y")
+                    session_year = session_date.year
+                    session_month = session_date.month
+                    session_year_month = (session_year, session_month)
+
                     # If no address, do not geolocalize. If there is, try the cache
                     if address_street_name == '':
                         geolocalization_success = False
@@ -82,10 +88,13 @@ def get_wifi_geodata(input_file_wifi):
                         # Add the wifi usage to the statistics
                         if wifi_block_name not in wifi_usage_per_block:
                             wifi_usage_per_block[wifi_block_name] = wifi_block_details
-                            wifi_usage_per_block[wifi_block_name]['wifi_usage'] = 0
-                        wifi_usage_per_block[wifi_block_name]['wifi_usage'] += 1
-                        if wifi_usage_per_block[wifi_block_name]['wifi_usage'] > max_wifi_usage_per_block:
-                            max_wifi_usage_per_block = wifi_usage_per_block[wifi_block_name]['wifi_usage']
+                            wifi_usage_per_block[wifi_block_name]['usage_per_month'] = {}
+                        if session_year_month not in wifi_usage_per_block[wifi_block_name]['usage_per_month']:
+                            wifi_usage_per_block[wifi_block_name]['usage_per_month'][session_year_month] = {}
+                            wifi_usage_per_block[wifi_block_name]['usage_per_month'][session_year_month]['wifi_usage'] = 0
+                        wifi_usage_per_block[wifi_block_name]['usage_per_month'][session_year_month]['wifi_usage'] += 1
+                        if wifi_usage_per_block[wifi_block_name]['usage_per_month'][session_year_month]['wifi_usage'] > max_wifi_usage_per_block:
+                            max_wifi_usage_per_block = wifi_usage_per_block[wifi_block_name]['usage_per_month'][session_year_month]['wifi_usage']
 
                         # Save geolocalization if needed to avoid duplicate API calls
                         if not geolocalized_input:
@@ -109,10 +118,11 @@ def get_wifi_geodata(input_file_wifi):
         # Loop over the blocks and fill the lines
         for wifi_block in wifi_usage_per_block:
             wifi_usage_block_details = wifi_usage_per_block[wifi_block]
-            wifi_usage_per_block_index = (wifi_usage_block_details['wifi_usage'] / max_wifi_usage_per_block) * 10
-            line_out_elements = [str(i) for i in [wifi_usage_block_details['block_ID'], wifi_usage_block_details['administrative_subdivision'], year, month, wifi_usage_per_block_index]]
-            filout.write(','.join(line_out_elements) + '\n')
-            lines_written += 1
+            for session_year_month in wifi_usage_per_block[wifi_block]['usage_per_month']
+                wifi_usage_per_block_index = (wifi_usage_block_details['usage_per_month'][session_year_month]['wifi_usage'] / max_wifi_usage_per_block) * 10
+                line_out_elements = [str(i) for i in [wifi_usage_block_details['block_ID'], wifi_usage_block_details['administrative_subdivision'], session_year_month[0], session_year_month[1], wifi_usage_per_block_index]]
+                filout.write(','.join(line_out_elements) + '\n')
+                lines_written += 1
     
     # Print some stats
     print(f'Read lines: {lines_read}')
