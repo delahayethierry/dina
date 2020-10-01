@@ -49,7 +49,7 @@ def get_wifi_geodata(input_file_wifi):
                     if 'longitude'  in headers and 'latitude' in headers:
                         geolocalized_input = True
                     else:
-                        filout_wifi_geolocated.write(';'.join(headers + ['latitude','longitude']))
+                        filout_wifi_geolocated.write(';'.join(headers + ['latitude','longitude']) + '\n')
             
                 # General case: extract the line and parse the data
                 else:
@@ -139,6 +139,6 @@ def get_wifi_geodata(input_file_wifi):
 # Module execution: launch main method
 if __name__ == '__main__':
     
-    input_file_wifi = 'input_data/wifi_usage_rome_202006.csv'
+    input_file_wifi = 'input_data/wifi_usage_rome_2020.csv'
     get_wifi_geodata(input_file_wifi)
 
