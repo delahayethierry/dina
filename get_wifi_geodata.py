@@ -1,3 +1,4 @@
+from datetime import datetime
 import json
 import math
 import os
@@ -61,7 +62,7 @@ def get_wifi_geodata(input_file_wifi):
                     address_full = f'{address_street_number}, {address_street_type} {address_street_name}'
 
                     # Parse the date
-                    session_date = datetime.strptime(timeStamp,"%d/%m/%Y")
+                    session_date = datetime.strptime(line_dict['STARTDATE'],"%d/%m/%Y")
                     session_year = session_date.year
                     session_month = session_date.month
                     session_year_month = (session_year, session_month)
@@ -98,7 +99,7 @@ def get_wifi_geodata(input_file_wifi):
 
                         # Save geolocalization if needed to avoid duplicate API calls
                         if not geolocalized_input:
-                            filout_wifi_geolocated.write(';'.join(line_elements + [str(latitude), str(longitude)]))
+                            filout_wifi_geolocated.write(';'.join(line_elements + [str(latitude), str(longitude)]) + '\n')
             
                 lines_read += 1
                 if lines_read % 1000 == 0:
@@ -118,7 +119,7 @@ def get_wifi_geodata(input_file_wifi):
         # Loop over the blocks and fill the lines
         for wifi_block in wifi_usage_per_block:
             wifi_usage_block_details = wifi_usage_per_block[wifi_block]
-            for session_year_month in wifi_usage_per_block[wifi_block]['usage_per_month']
+            for session_year_month in wifi_usage_per_block[wifi_block]['usage_per_month']:
                 wifi_usage_per_block_index = (wifi_usage_block_details['usage_per_month'][session_year_month]['wifi_usage'] / max_wifi_usage_per_block) * 10
                 line_out_elements = [str(i) for i in [wifi_usage_block_details['block_ID'], wifi_usage_block_details['administrative_subdivision'], session_year_month[0], session_year_month[1], wifi_usage_per_block_index]]
                 filout.write(','.join(line_out_elements) + '\n')

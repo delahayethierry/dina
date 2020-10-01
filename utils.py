@@ -211,7 +211,7 @@ def query_geolocalization(address, city_name, country_name, here_api_key):
         "q": address_query, 
         'apikey': here_api_key
     }
-    response = requests.get(geolocation_url, params=address_query_params)
+    response = requests.get(geolocation_url, params=address_query_params, verify = False)
     response_json = json.loads(response.text)
 
     # If response successful, fill the coordinates. Else, put dummy values
