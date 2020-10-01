@@ -31,7 +31,7 @@ def get_hotel_geodata(input_file_hotels):
     geolocalized_input = False
     
     # Open the hotels file
-    with open(input_file_hotels) as filin_hotels, open('output_data/hotels_geolocated.csv', 'w') as filout_hotels_geolocated:
+    with open(input_file_hotels) as filin_hotels:
         
         while True:
             try:
@@ -44,6 +44,9 @@ def get_hotel_geodata(input_file_hotels):
                     headers = line_elements
                     if 'longitude'  in headers and 'latitude' in headers:
                         geolocalized_input = True
+                    else:
+                        filout_hotels_geolocated = open('output_data/hotels_geolocated.csv', 'w')
+                        filout_hotels_geolocated.write(';'.join(headers + ['latitude','longitude']) + '\n')
             
                 # General case: extract the line and parse the data
                 else:
@@ -90,6 +93,11 @@ def get_hotel_geodata(input_file_hotels):
                 break
             except UnicodeDecodeError:
                 print(f'Error: could not decode line {lines_read}')
+
+
+        # Close the geolocalized file if needed
+        if not geolocalized_input:
+            filout_hotels_geolocated.close()
 
     # Open the output file
     with open('output_data/hotels.csv', 'w') as filout:

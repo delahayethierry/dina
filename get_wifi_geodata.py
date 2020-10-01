@@ -145,6 +145,6 @@ def get_wifi_geodata(input_file_wifi):
 if __name__ == '__main__':
     
     #input_file_wifi = 'input_data/wifi_usage_rome_2020.csv'
-    input_file_wifi = 'output_data/wifi_geolocated.csv'
+    input_file_wifi = 'input_data/wifi_geolocated.csv'
     get_wifi_geodata(input_file_wifi)
 
