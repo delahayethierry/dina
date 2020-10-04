@@ -1,15 +1,17 @@
 # Install Folium beforehands: pip install folium, pip install pandas
+import datetime
 import os
 import sys
 import webbrowser
 from math import ceil
-import datetime
+
 import folium
 import numpy as np
 import ogr
 import pandas as pd  # data processing, CSV file I/O (e.g. pd.read_csv)
 import pyproj
-from folium import FeatureGroup, LayerControl, Map, Marker, plugins, TimestampedGeoJson
+from folium import (FeatureGroup, LayerControl, Map, Marker,
+                    TimestampedGeoJson, plugins)
 
 import config as config
 import utils

@@ -3,12 +3,13 @@ import json
 import math
 import os
 import requests
+import config
 
 import utils
 
 # Global variables
-CITY_NAME = 'Rome'
-COUNTRY_NAME = 'Italy'
+CITY_NAME = config.city_name
+COUNTRY_NAME = config.country_name
 
 # Env variables
 HERE_API_KEY = os.getenv("here_api_key")
@@ -144,7 +145,5 @@ def get_wifi_geodata(input_file_wifi):
 # Module execution: launch main method
 if __name__ == '__main__':
     
-    #input_file_wifi = 'input_data/wifi_usage_rome_2020.csv'
-    input_file_wifi = 'input_data/wifi_geolocated.csv'
-    get_wifi_geodata(input_file_wifi)
+    get_wifi_geodata(config.city_wifi_input_file)
 

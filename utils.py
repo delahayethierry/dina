@@ -1,18 +1,19 @@
 
-import config
-import folium
-import geopandas as gpd
 import json
 import math
+
+import folium
+import geopandas as gpd
 import pandas as pd  # data processing, CSV file I/O (e.g. pd.read_csv)
 import pyproj
-from pyproj import Transformer
 import requests
 import shapely.geometry
+from pyproj import Transformer
 from shapely.geometry import Polygon
 
+import config
 
-administrative_subdivision_lookup_df = pd.read_csv(config.municipi_lookup,names = ['data', 'id', 'display_name'])
+administrative_subdivision_lookup_df = pd.read_csv(config.administrative_subdivision_lookup,names = ['data', 'id', 'display_name'])
 city_grid_df = pd.read_csv(config.city_grid_csv_file)
 
 
@@ -130,10 +131,8 @@ def extract_block(longitude, latitude):
         latitude = latitude.replace(',','.')
     
         # Build the block name
-        # block = extract_block_float(longitude, latitude)
         block = get_city_block(longitude, latitude)
     else:
-        #block = build_dummy_block()
         block = build_dummy_city_block()
     
     return block
@@ -164,33 +163,6 @@ def build_dummy_city_block():
     block_name = {
         'block_ID' : -1,
         'administrative_subdivision' : 0
-    }
-    block_name['name'] = ''
-    
-    return block_name
-
-# Maps a longitude, latitude to a block. This method can be replaced to whatever block is needed (more/less granular, or any function of longitude, latitude)
-# Depreciated
-def extract_block_float(longitude, latitude):
-    print('Function is depreciated (uses the old city block management). You should use get_city_block instead')
-    longitude_float = float(longitude)
-    latitude_float = float(latitude)
-
-    block_name = {
-        'longitude' : (float(math.floor(longitude_float*100))+0.5)/100,
-        'latitude' : (float(math.floor(latitude_float*100))+0.5)/100
-    }
-    block_name['name'] = str(block_name['longitude']) + '-' + str(block_name['latitude'])
-    
-    return block_name
-
-
-# Builds a dummy block for cases where we do not have the coordinates
-def build_dummy_block():
-    print('Function is depreciated (uses the old city block management). You should use build_dummy_city_block instead')
-    block_name = {
-        'longitude' : 0,
-        'latitude' : 0
     }
     block_name['name'] = ''
     

@@ -2,13 +2,13 @@ import json
 import math
 import os
 import requests
+import config
 
 import utils
 
 # Global variables
-CITY_NAME = 'Rome'
-COUNTRY_NAME = 'Italy'
-
+CITY_NAME = config.city_name
+COUNTRY_NAME = config.country_name
 # Env variables
 HERE_API_KEY = os.getenv("here_api_key")
 
@@ -158,6 +158,5 @@ def query_geolocalization(hotel_address):
 # Module execution: launch main method
 if __name__ == '__main__':
     
-    input_file_hotels = 'input_data/hotel_locations_geolocalized.csv'
-    get_hotel_geodata(input_file_hotels)
+    get_hotel_geodata(config.city_hotels_input_file_geolocated)
 
