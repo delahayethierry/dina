@@ -30,7 +30,6 @@ city_accidents_input_file = 'input_data/csv_incidenti_merge_20192020.csv'
 city_hotels_input_file_geolocated = 'input_data/hotel_locations_geolocalized.csv'
 city_hotels_input_file = 'input_data/hotel_locations.csv'
 
-
 #File where we consolidated anonimized wifi logs from the Roma Open Data portal
 city_wifi_input_file = 'input_data/wifi_geolocated.csv'
 

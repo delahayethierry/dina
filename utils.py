@@ -54,6 +54,8 @@ def generate_city_grid():
     blocks_sw_latitude = []
     blocks_ne_longitude = []
     blocks_ne_latitude = []
+    blocks_centroid_longitude = []
+    blocks_centroid_latitude = []
     
     x = transformed_sw[0]
     while x < transformed_ne[0]:
@@ -76,6 +78,9 @@ def generate_city_grid():
             blocks_ne_longitude.append(grid_ne[1])
             blocks_ne_latitude.append(grid_ne[0])
             
+            blocks_centroid_longitude.append (grid_sw[1]+(grid_ne[1]-grid_sw[1])/2)
+            blocks_centroid_latitude.append (grid_sw[0]+(grid_ne[0]-grid_sw[0])/2)
+            
             administrative_subdivision = ''
             for index, row in municipi_df.iterrows():
                 if block_polygon.centroid.within(row['geometry']):
@@ -94,7 +99,8 @@ def generate_city_grid():
 
     grid_csv = pd.DataFrame({'block_ID': properties_block_ID, 'administrative_subdivision': properties_administrative_subdivision, 
                             'sw_longitude': blocks_sw_longitude,'sw_latitude': blocks_sw_latitude,
-                            'ne_longitude': blocks_ne_longitude,'ne_latitude': blocks_ne_latitude })
+                            'ne_longitude': blocks_ne_longitude,'ne_latitude': blocks_ne_latitude, 
+                            'centroid_longitude': blocks_centroid_longitude , 'centroid_latitude': blocks_centroid_latitude , })
     grid_csv.to_csv(config.city_grid_csv_file, index=False)
     print ('City Grid save in CSV format in ', config.city_grid_csv_file,", ",str(i-1),' blocks created')
 

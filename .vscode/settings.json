@@ -1,0 +1,10 @@
+{
+    "launch": {
+
+        "configurations": [],
+        "compounds": []
+    },
+    "python.linting.pylintArgs": [
+        "--enable=W0614"
+    ]
+}

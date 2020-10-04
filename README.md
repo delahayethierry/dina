@@ -82,15 +82,34 @@ From the files in the output_data, the indices can be generated. These are weigh
 ## Generate and display the DINA Heat Maps (Lighting Needs Index, Security Needs Index, Connectivity Needs Index)
 
 Open a command line and go to the folder where DINA has been downloaded and commands:
-`$ python display_maps.py`
+`$ python display_heatmap.py`
+
+### Examples of generated maps
+
+It will generate 2 sets 3 html files containing the maps in the sub-folder ./map/ and try to open them with a web browser:
+Indexes per months (whatever the year is, i.e. data is consolidated per month)
+* [DINA_Rome_Italy_800mX800m_Lighting_Needs_per_month_Heatmap.html](./map/DINA_Rome_Italy_800mX800m_Lighting_Needs_per_month_Heatmap.html)
+* [DINA_Rome_Italy_800mX800m_Security_Needs_per_month_Heatmap.html](./map/DINA_Rome_Italy_800mX800m_Security_Needs_per_month_Heatmap.html)
+* [DINA_Rome_Italy_800mX800m_Connectivity_Needs_per_month_Heatmap.html](./map/DINA_Rome_Italy_800mX800m_Connectivity_Needs_per_month_Heatmap.html)
+
+Indexes per year-months (better view for historical indexes per months, since 2019)
+* [DINA_Rome_Italy_800mX800m_Lighting_Needs_per_year-month_Heatmap.html](./map/DINA_Rome_Italy_800mX800m_Lighting_Needs_per_year-month_Heatmap.html)
+* [DINA_Rome_Italy_800mX800m_Security_Needs_per_year-month_Heatmap.html](./map/DINA_Rome_Italy_800mX800m_Security_Needs_per_year-month_Heatmap.html)
+* [DINA_Rome_Italy_800mX800m_Connectivity_Needs_per_year-month_Heatmap.html](./map/DINA_Rome_Italy_800mX800m_Connectivity_Needs_per_year-month_Heatmap.html)
 
 
-It will generate 3 html files containing the maps in the sub-folder ./map/ and try to open them with a web browser:
-* [DINA_Lighting_Needs_Index.html](./map/DINA_Lighting_Needs_Index.html)
-* [DINA_Security_Needs_Index.html](./map/DINA_Security_Needs_Index.html)
-* [DINA_Connectivity_Needs_Index.html](./map/DINA_Connectivity_Needs_Index.html)
 
-![Example of Heatmap for the city of Roma and Lighting Needs](DINA_HeatMap_Example.png)
+Example of Heatmap for the city of Roma and Lighting Needs estimation in October:
+![Example of Heatmap for the city of Roma and Lighting Needs estimation in October](./documentation/DINA_HeatMap_Example_01.png)
+
+
+Example of Heatmap for the city of Roma and estimated historical security Needs in September 2019:
+![Example of Heatmap for the city of Roma and estimated historical security Needs in September 2019](./documentation/DINA_HeatMap_Example_02.png)
+
+
+Example of Heatmap for the city of Roma and estimated historical security Needs estimation from January 2019 to February 2020:
+![Example of Heatmap for the city of Roma and estimated historical security Needs estimation from January 2019 to February 2020](./documentation/DINA_HeatMap_Example_03.gif)
+
 
 
 ##  Built Using <a name = "built_using"></a>
