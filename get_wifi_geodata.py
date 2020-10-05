@@ -95,7 +95,7 @@ def get_wifi_geodata(input_file_wifi):
                         if session_year_month not in wifi_usage_per_block[wifi_block_name]['usage_per_month']:
                             wifi_usage_per_block[wifi_block_name]['usage_per_month'][session_year_month] = {}
                             wifi_usage_per_block[wifi_block_name]['usage_per_month'][session_year_month]['wifi_usage'] = 0
-                        wifi_usage_per_block[wifi_block_name]['usage_per_month'][session_year_month]['wifi_usage'] += 1
+                        wifi_usage_per_block[wifi_block_name]['usage_per_month'][session_year_month]['wifi_usage'] += float(line_dict['DOWNLOAD'])
                         if wifi_usage_per_block[wifi_block_name]['usage_per_month'][session_year_month]['wifi_usage'] > max_wifi_usage_per_block:
                             max_wifi_usage_per_block = wifi_usage_per_block[wifi_block_name]['usage_per_month'][session_year_month]['wifi_usage']
 
