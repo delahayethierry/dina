@@ -159,9 +159,7 @@ def create_heatmap(mapname, index_input_file,period_for_heatmap_parameter):
     print("Saving the generated map in: " + mapFileName)
     webbrowser.open(mapFileName, new=2)
 
-
-# Module execution: launch main method
-if __name__ == '__main__':
+def create_all_maps():
     # Create a set of maps with data grouped by months (whatever the year is: 2019 or 2020)
     create_heatmap ('Security Needs', config.security_needs_index_file, 'month')
     create_heatmap ('Lighting Needs', config.lighting_needs_index_file, 'month')
@@ -171,4 +169,8 @@ if __name__ == '__main__':
     create_heatmap ('Security Needs', config.security_needs_index_file, 'year-month')
     create_heatmap ('Lighting Needs', config.lighting_needs_index_file, 'year-month')
     create_heatmap ('Connectivity Needs', config.connectivity_needs_index_file, 'year-month')
+
+# Module execution: launch main method
+if __name__ == '__main__':
+    create_all_maps()
     

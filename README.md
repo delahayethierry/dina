@@ -1,9 +1,9 @@
 
-<h3 align="center">DINA - Data-driven Implicit Needs Alanyzer</h3>
+<h3 align="center">DINA - Data-driven Implicit Needs Analyzer</h3>
 
 ---
 
-<p align="center"> A tool which leverages Public Administration Open Data to provide cities with actionable insights about what citizens implicitly need in terms of seciruty, lighting and connectivity
+<p align="center"> A tool which leverages Public Administration Open Data to provide cities with actionable insights about what citizens implicitly need in terms of security, lighting and connectivity
     <br> 
 </p>
 
@@ -16,11 +16,11 @@
 
 ##  About <a name = "about"></a>
 
-This project is a proposal sublitted in the scope of an Innoventive Challenge [New Smart City Solutions Enabled by Open Data](https://openinnovability.enel.com/projects/New-smart-city-solutions-enabled-by-open-data)
+This project is a proposal submitted in the scope of an Innocentive Challenge [New Smart City Solutions Enabled by Open Data](https://openinnovability.enel.com/projects/New-smart-city-solutions-enabled-by-open-data)
 Our targeted users are: 
 1.	Chief Operating Officer and/or operations of the city’s public lighting department
 2.	Analysts working in the Urban Planning department
-3.	Tourist Office officers (City DMOs)
+3.	Tourist Office officers (City Destination Marketing Organizations)
 
 The solution prototyped in the scope of this project is called DINA (Data-driven Implicit Needs Analyzer) and is made of 2 main components:
 
@@ -59,7 +59,7 @@ You need to install:
 1. a recent version of Python (see [for instance this package for Windows](https://www.python.org/downloads/release/python-385/))
 2. the pip tool in order to install Python packages (see [installation guide](https://www.liquidweb.com/kb/install-pip-windows/))
 
-Once pip is installed, run the following command to downloadand install the requested python packages (folium for maps display, pandas for csv files processing)  line and typing
+Once pip is installed, run the following command to download and install the requested python packages (folium for maps display, pandas for csv files processing)  line and typing
 
 `$ pip install -r requirements.txt`
 
@@ -121,9 +121,12 @@ Example of Heatmap for the city of Roma and estimated historical security Needs 
 
 ## Datasets used in the scope of this proof of concept
 
+Main source of data: [Roma Open Data portal](https://dati.comune.roma.it/catalog/en/dataset)
+
 Dataset Name | Description | Provider | Resource | Period Covered | Comments
 -------------|-------------|----------|----------|----------------|----------
-[Hotels/Accomodation Data](./input_data/hotel_locations.csv) | List of accommodation facilities in Rome Capital in 2020.  | [Roma Open Data Portal](https://dati.comune.roma.it) | [Roma Capitale accommodation facilities in 2020](https://dati.comune.roma.it/catalog/dataset/d865) | 01/2020 | We assumed that number of accomodations did not change over time but an improvement will be to aggregate all months
+[Hotels/Accommodation Data](./input_data/hotel_locations.csv) | List of accommodation facilities in Rome Capital in 2020.  | [Roma Open Data Portal](https://dati.comune.roma.it) | [Roma Capitale accommodation facilities in 2020](https://dati.comune.roma.it/catalog/dataset/d865) | 01/2019 - 08/2020 | The format of dataset changes from one month to another in 2019 so we skipped some months
 [Accidents Data](./input_data/csv_incidenti_merge_20192020.csv) | The dataset contains the list of road accidents that occurred in the territory of Roma Capitale in the year 2019. The dataset contains all the road accidents in which a patrol of any Group of the Roma Capitale Local Police intervened. Therefore, only incidents in which the parties involved have reached a conciliation are excluded. The dataset does not include the accidents that occurred on the Grande Raccordo Anulare of Roma Capitale. | [Roma Open Data Portal](https://dati.comune.roma.it) | [Road accidents in the territory of Roma Capitale - Year 2019-2020](https://dati.comune.roma.it/catalog/dataset/d852) | 01-2019 - 12/2019, 01/2020 - 02/2020 | we merged monthly data files into 1 consolidated file
-Municipi Shapes | Shapes of Roma Municipi in geojson format (municipi.geojson) | Roma Urbanistica | https://romaurbanistica.carto.com/tables/municipi/public | N/A | 
+[Public wifi Data](https://dati.comune.roma.it/catalog/dataset/wifi2020) | Anonymized web browsing sessions found in the Rome WiFi system | [Roma Open Data Portal](https://dati.comune.roma.it) | [Anonymized web browsing sessions found in the Rome WiFi system](https://dati.comune.roma.it/catalog/dataset/wifi2020) | 04/01/2020 to 30/09/2020 |  
+Shapes of Administrative Subdivisions | Shapes of Roma Municipi in geojson format (municipi.geojson) | Roma Urbanistica | https://romaurbanistica.carto.com/tables/municipi/public | N/A | 
 
