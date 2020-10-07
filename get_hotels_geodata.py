@@ -2,10 +2,12 @@ import json
 import math
 import os
 import requests
-import config
 import urllib3
-import utils
 from datetime import datetime
+
+# Local imports
+import config
+import utils
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -13,9 +15,11 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 CITY_NAME = config.city_name
 COUNTRY_NAME = config.country_name
 room_types = ['SINGOLE','DOPPIE','TRIPLE','QUADRUPLE','QUINTUPLE','SESTUPLE']
+
 # Env variables
 HERE_API_KEY = os.getenv("here_api_key")
 hotel_geolocation_cache = {}
+
 # Main method
 def get_hotel_geodata(input_file_hotels):
 
@@ -38,6 +42,7 @@ def get_hotel_geodata(input_file_hotels):
         while True:
 
             try:
+                # Extract the next line
                 line = next(filin_hotels)
                 line_elements = line.strip('\n').split(';')
 
@@ -86,9 +91,9 @@ def get_hotel_geodata(input_file_hotels):
                     # capacity of the B&B apartment is 2 (as we don't have more information)
                     if accommodation_capacity == 0:
                         accommodation_capacity += 2
+                    
                     # Build the full address line
                     address_query = ', '.join([accommodation_address, CITY_NAME, COUNTRY_NAME])
-                    #print(f'Parsed line: {hotel_address} - {hotel_rooms}')
                     
                     if geolocalized_input:
                         latitude = line_dict['latitude']
