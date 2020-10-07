@@ -53,17 +53,17 @@ city_claims_input_file = 'input_data/consolidated_claims.csv'
 # and more attractive from their point of view. This is why touristic-related data sources are used to calculate the lighting needs index
 indexes_calculation_parameters = {
     'lighting': {
-        'accidents': 0.3,
-        'hotels': 0.3,
+        'accidents': 0.4,
+        'hotels': 0.1,
         'wifi': 0.2,
-        'lighting_claims': 0.2
+        'lighting_claims': 0.3
     },
     'connectivity': {
-        'hotels': 0.6,
-        'wifi': 0.4
+        'hotels': 0.5,
+        'wifi': 0.5
     },
     'security': {
-        'accidents': 0.6,
-        'security_claims': 0.4
+        'accidents': 0.7,
+        'security_claims': 0.3
     },
 }

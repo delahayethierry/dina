@@ -137,7 +137,7 @@ def get_city_blocks_from_administrative_subdivision(administrative_subdivision):
                 block_list.append(block_name)
     except:
         # do nothing. Administrative_division is not an integer
-        print("Administrative Subdivision  {administrative_subdivision} does not have the right format")
+        print('Administrative Subdivision', str(administrative_subdivision), ' does not have the right format')
     return block_list
     
 

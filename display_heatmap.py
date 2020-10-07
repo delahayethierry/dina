@@ -27,6 +27,8 @@ def createHeatMapWithTimeFromIndexFile(indexFile, period_for_heatmap_parameter,h
     needs_index_df = needs_index_df[needs_index_df['Year']>=2019]
     needs_index_df = needs_index_df[needs_index_df['Month']>0]
     needs_index_df = needs_index_df[needs_index_df['block_ID']>-1]    
+    needs_index_df = needs_index_df[needs_index_df['administrative_subdivision']>0]
+    
 
     # Convert some columns       
     needs_index_df['Year'] = needs_index_df['Year'].astype(str)
@@ -35,39 +37,49 @@ def createHeatMapWithTimeFromIndexFile(indexFile, period_for_heatmap_parameter,h
     needs_index_df['period'] = pd.to_datetime(needs_index_df['period'], errors='coerce', format='%Y-%m')
     needs_index_df['Index'] = needs_index_df['Index'].astype(float)
 
+    #print('Number of rows in datafile before the association between block IDs and latitude/longitude: ', str(needs_index_df.count))
     # Use the city grid file to append the latitude/longitude of the centre of each block (useful for heatmaps) using a look-up
-    heatmap_index_df = pd.merge(left=needs_index_df, right=city_grid_df, how='left', left_on='block_ID', right_on='block_ID')
+    heatmap_index_df = pd.merge(left=needs_index_df, right=city_grid_df, how='left', on='block_ID')
+   
+    skipped_rows = len(needs_index_df.index) - len(heatmap_index_df.index)
+    print('Number of rows skipped in datafile after the association between block IDs and latitude/longitude: ', str(skipped_rows))
 
     # Remove null rows
-    heatmap_index_df = heatmap_index_df.dropna(axis=0, subset=['centroid_latitude','centroid_longitude', 'Index'])
+    heatmap_index_df = heatmap_index_df.dropna(axis=0, subset=['centroid_latitude','centroid_longitude'])
+    #print('Number of rows in datafile after removing the missing longitude/latitude: ', str(heatmap_index_df.count))
 
-    # Sort values by month
-    heatmap_index_df['Month']=heatmap_index_df['Month'].sort_values(ascending=True)
+    # Sort values by period
+    heatmap_index_df['period']=heatmap_index_df['period'].sort_values(ascending=True)
     
     # Initialize the heatmap data
     heat_data = []
     heatmap_label = []
     
     # Month case: group by month and don't care about the year
+
+        
     if period_for_heatmap_parameter == 'month':
-        for _, d in heatmap_index_df.sort_values(by=['Month']).groupby('Month'):
+        grouped_by_df = heatmap_index_df.sort_values(by=['Month']).groupby(by='Month')
+        for _, d in grouped_by_df:
             heat_data.append([[row['centroid_latitude'], row['centroid_longitude'], row['Index']] for _, row in d.iterrows()])
+                
         for m in heatmap_index_df['Month'].unique().astype(int):
             heatmap_label.append(calendar.month_name[m])
-
+        
     # Year-Month case: group by period (i.e. YEAR-MONTH like 2019-02)
     else:
+        
         for _, d in heatmap_index_df.sort_values(by=['period']).groupby('period'):
             heat_data.append([[row['centroid_latitude'], row['centroid_longitude'], row['Index']] for _, row in d.iterrows()])
-        for p in heatmap_index_df['period'].unique():
+        for p in np.sort(heatmap_index_df['period'].unique()):
             ts = pd.to_datetime(str(p)) 
-            heatmap_label.append(ts.strftime("%Y-%b"))
+            heatmap_label.append(ts.strftime("%Y-%m"))
     
     # Generate the heatmap
     heatmap_from_index = plugins.HeatMapWithTime(heat_data, name = heatmap_name + " per " + period_for_heatmap_parameter, index = heatmap_label, auto_play=False, min_opacity = 0.00, 
-                                                 radius = 125, max_opacity=0.3, use_local_extrema = False, gradient={0.0: 'lime', 0.5: 'orange', 1: 'red'})
+                                                 radius = 175, max_opacity=0.3, use_local_extrema = True, gradient={0.0: 'lime', 0.5: 'orange', 1: 'red'})
     
-   
+    
     return heatmap_from_index
 
 
@@ -108,7 +120,7 @@ def create_heatmap(mapname, index_input_file,period_for_heatmap_parameter):
     map_grid = folium.Choropleth(
         geo_data='./input_data/city_grid.geojson',
         name=config.city_name + ' City Grid',
-        columns=['administrative_subdivision'],
+        columns=['administrative_subdivision','block_ID'],
         fill_color='RdPu',
         fill_opacity=0,
         line_opacity=0.1,
@@ -117,7 +129,8 @@ def create_heatmap(mapname, index_input_file,period_for_heatmap_parameter):
     )
     
     # Adds a tooltip
-    map_grid.geojson.add_child( folium.features.GeoJsonTooltip(['administrative_subdivision']))
+    #choropleth.geojson.add_child( folium.features.GeoJsonTooltip(['administrative_subdivision']))
+    map_grid.geojson.add_child( folium.features.GeoJsonTooltip(['administrative_subdivision','block_ID'], aliases=['Administrative Subdivision','Block Identifier']))
 
     # Creates the city map
     city_map = folium.Map(location=city_coords, zoom_start=12,
@@ -148,7 +161,7 @@ def create_all_maps():
     create_heatmap ('Lighting Needs', config.lighting_needs_index_file,'month')
     create_heatmap ('Connectivity Needs', config.connectivity_needs_index_file, 'month')
     
-    # Create a set of maps with data grouped by year-month (less data per time period but provides a better view of history)
+    #Create a set of maps with data grouped by year-month (less data per time period but provides a better view of history)
     create_heatmap ('Security Needs', config.security_needs_index_file, 'year-month')
     create_heatmap ('Lighting Needs', config.lighting_needs_index_file, 'year-month')
     create_heatmap ('Connectivity Needs', config.connectivity_needs_index_file, 'year-month')
