@@ -1,10 +1,11 @@
-from datetime import datetime
 import json
 import math
 import os
 import requests
-import config
+from datetime import datetime
 
+# Local imports
+import config
 import utils
 import urllib3
 
@@ -43,8 +44,11 @@ def get_wifi_geodata(input_file_wifi):
         
         while True:
             try:
+
+                 # Extract the next line
                 line = next(filin_wifi)
                 line_elements = line.replace('"','').strip('\n').split(';')
+
 
                 # First line: headers - Only open the geolocalized file if the input is not geolocalized
                 if lines_read == 0:
@@ -87,6 +91,7 @@ def get_wifi_geodata(input_file_wifi):
                         #print(f'Geolocalization for {address_full}: {geolocalization_success}, {latitude}, {longitude}')
                         addresses_coordinates[address_full] = (latitude, longitude)
 
+                    # If we have a geolocalization, add the wifi usage to the stats
                     if geolocalization_success:
                         wifi_block_details = utils.get_city_block(longitude, latitude)
                         wifi_block_name = wifi_block_details['name']
@@ -106,10 +111,12 @@ def get_wifi_geodata(input_file_wifi):
                         if not geolocalized_input:
                             filout_wifi_geolocated.write(';'.join(line_elements + [str(latitude), str(longitude)]) + '\n')
             
+                # Logging
                 lines_read += 1
                 if lines_read % 1000 == 0:
                     print(f'Read {lines_read} lines')
 
+            # Error handling
             except StopIteration:
                 break
             except UnicodeDecodeError:
@@ -139,8 +146,6 @@ def get_wifi_geodata(input_file_wifi):
     print(f'Written lines: {lines_written}')
 
     return wifi_usage_per_block
-
-
 
 
 

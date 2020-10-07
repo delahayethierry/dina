@@ -4,9 +4,8 @@ import config
 import utils
 
 
-# Main method
+# Main method to create indexes from the data sources
 def create_indexes():
-
 
     # Loop over indexes and build the index from the existing data
     for index in config.indexes_calculation_parameters:
@@ -26,7 +25,6 @@ def create_indexes():
         index_values.to_csv(f'map/{index}_needs_index.csv', index=False)
 
     return
-
 
 
 
