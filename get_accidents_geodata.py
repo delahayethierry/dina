@@ -1,6 +1,8 @@
 import datetime
 import math
 import utils
+
+# Local imports
 import config
 
 
@@ -14,11 +16,11 @@ def get_accidents_geodata(input_file_accidents):
     # General stats
     lines_read = 0
     lines_written = 0
-
     
     # Open the accidents file
     with open(input_file_accidents) as filin_accidents:
         
+        # Loop over the accidents file
         for line in filin_accidents:
             line_elements = line.split(';')
 
@@ -30,10 +32,13 @@ def get_accidents_geodata(input_file_accidents):
             else:
                 line_dict = utils.extract_line(headers, line_elements)
                 
+                # Extract accident details
                 accident_block_details = utils.extract_block(line_dict['Longitudine'], line_dict['Latitudine'])
                 accident_block_name = accident_block_details['name']
                 accident_lighting = line_dict['Illuminazione']
                 accident_datetime_str = line_dict['DataOraIncidente']
+
+                # Try to extract the date, and default to dummy values if there is an error
                 try:
                     accident_datetime = datetime.datetime.strptime(accident_datetime_str, '%d/%m/%Y %H:%M:%S')
                     accident_year = str(accident_datetime.year)

@@ -1,9 +1,9 @@
 
-import json
-import math
 
 import folium
 import geopandas as gpd
+import json
+import math
 import pandas as pd  # data processing, CSV file I/O (e.g. pd.read_csv)
 import pyproj
 import requests
@@ -11,11 +11,12 @@ import shapely.geometry
 from pyproj import Transformer
 from shapely.geometry import Polygon
 
+# Local imports
 import config
 
+# Import grid csvs
 administrative_subdivision_lookup_df = pd.read_csv(config.administrative_subdivision_lookup,names = ['data', 'id', 'display_name'])
 city_grid_df = pd.read_csv(config.city_grid_csv_file)
-
 
 # Generate city_grid.geojson file based on a bounding box (SW-NE Coordinates to cover) and width/height
 # as defined in config.py in variables block_width and block_height
@@ -24,6 +25,7 @@ def generate_city_grid():
     # Get the lower-left and upper-right bounds from the Municipi shapes to center the map
     administrative_subdivisions_shapes_bounds = folium.GeoJson(config.administrative_subdivision_geojson_file).get_bounds()
     print('Generating a city grid with blocks of ',config.block_width,'meters x ',config.block_height,' meters, using this bounding box: ',administrative_subdivisions_shapes_bounds)
+    
     # Set up projections
     transformer = Transformer.from_crs('epsg:4326', 'epsg:3857') # transformer to translate epsh:4326 to epsg:3857 = metric; same as EPSG:900913
     transformer_back = Transformer.from_crs('epsg:3857', 'epsg:4326') # transformer to transform from metric to epsg:4326
@@ -40,6 +42,7 @@ def generate_city_grid():
     # of administrative subdivisions like Municipi in Roma
     municipi_df = gpd.read_file(config.administrative_subdivision_geojson_file)
 
+    # Initialize iterator
     i = 0
     
     #List which will be used as columns/properties in the GeoJsona and CSV files to be generated
@@ -57,6 +60,7 @@ def generate_city_grid():
     blocks_centroid_longitude = []
     blocks_centroid_latitude = []
     
+    # Loop to generate the city grid
     x = transformed_sw[0]
     while x < transformed_ne[0]:
         y = transformed_sw[1]
@@ -92,11 +96,13 @@ def generate_city_grid():
             y += config.block_height
         x += config.block_width
 
+    # Create the geopandas dataframe
     grid_geojson = gpd.GeoDataFrame({'geometry': gridpoints, 'block_ID': properties_block_ID,
                              'administrative_subdivision': properties_administrative_subdivision}, crs='EPSG:4326')
     grid_geojson.to_file(config.city_grid_geojson_file, driver='GeoJSON')
     print ('City Grid save in GeoJson format in ', config.city_grid_geojson_file,", ",str(i-1),' blocks created')
 
+    # Create the grid as pandas dataframe and save to csv
     grid_csv = pd.DataFrame({'block_ID': properties_block_ID, 'administrative_subdivision': properties_administrative_subdivision, 
                             'sw_longitude': blocks_sw_longitude,'sw_latitude': blocks_sw_latitude,
                             'ne_longitude': blocks_ne_longitude,'ne_latitude': blocks_ne_latitude, 
@@ -117,6 +123,7 @@ def extract_line(headers, line_elements):
     
     return line_dict
 
+# Gets the administrative division ID from its name
 def get_administrative_division_id_from_name(name_in_text):
     
     if name_in_text in administrative_subdivision_lookup_df['data'].values:
@@ -144,6 +151,7 @@ def extract_block(longitude, latitude):
     return block
 
 
+# Gets the corresponding city block from coordinates
 def get_city_block(longitude, latitude):
 
     try:

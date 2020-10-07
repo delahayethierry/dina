@@ -22,7 +22,6 @@ administrative_subdivision_geojson_file = "./input_data/administrative_subdivisi
 administrative_subdivision_lookup = "./input_data/administrative_subdivision_lookup.csv"
 
 
-
 #File where we consolidated accidents from the Roma Open Data portal
 city_accidents_input_file = 'input_data/csv_incidenti_merge_20192020.csv' 
 

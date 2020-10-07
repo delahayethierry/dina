@@ -35,8 +35,9 @@ def get_hotel_geodata(input_file_hotels):
         
         while True:
             try:
-                line = next(filin_hotels)
 
+                # Extract the next line
+                line = next(filin_hotels)
                 line_elements = line.strip('\n').split(';')
 
                 # First line: headers
@@ -60,8 +61,8 @@ def get_hotel_geodata(input_file_hotels):
 
                     # Build the full address line
                     address_query = ', '.join([hotel_address, CITY_NAME, COUNTRY_NAME])
-                    #print(f'Parsed line: {hotel_address} - {hotel_rooms}')
                     
+                    # If the input is geolocalized, get the coordinates. Else, call the HERE api
                     if geolocalized_input:
                         latitude = line_dict['latitude']
                         longitude = line_dict['longitude']
@@ -69,6 +70,7 @@ def get_hotel_geodata(input_file_hotels):
                     else:
                         geolocalization_success, latitude, longitude = query_geolocalization(hotel_address)
 
+                    # If we have a geolocalization, add the hotel to the stats
                     if geolocalization_success:
                         hotel_block_details = utils.get_city_block(longitude, latitude)
                         hotel_block_name = hotel_block_details['name']
@@ -85,21 +87,22 @@ def get_hotel_geodata(input_file_hotels):
                         if not geolocalized_input:
                             filout_hotels_geolocated.write(';'.join(line_elements + [str(latitude), str(longitude)]))
             
+                # Logging
                 lines_read += 1
                 if lines_read % 1000 == 0:
                     print(f'Read {lines_read} lines')
 
+            # Error handling
             except StopIteration:
                 break
             except UnicodeDecodeError:
                 print(f'Error: could not decode line {lines_read}')
 
-
         # Close the geolocalized file if needed
         if not geolocalized_input:
             filout_hotels_geolocated.close()
 
-    # Open the output file
+    # Open the output file and print the final stats
     with open('output_data/hotels.csv', 'w') as filout:
 
         # Print headers
@@ -112,9 +115,6 @@ def get_hotel_geodata(input_file_hotels):
             line_out_elements = [str(i) for i in [hotel_rooms_block_details['block_ID'], hotel_rooms_block_details['administrative_subdivision'], year, month, hotel_rooms_per_block_index]]
             filout.write(','.join(line_out_elements) + '\n')
             lines_written += 1
-    
-    
-    
     
     # Print some stats
     print(f'Read lines: {lines_read}')
