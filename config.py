@@ -39,6 +39,10 @@ city_hotels_input_file = 'input_data/consolidated_hotels.csv'
 city_wifi_input_file = 'input_data/consolidated_wifi.csv'
 city_wifi_input_file_geolocated = 'output_data/wifi_geolocated.csv'
 
+#File where we consolidated claims from the Roma Open Data portal
+city_claims_input_file = 'input_data/consolidated_claims.csv'
+
+
 #Index calculation. 
 # Define the lighting, security and connectivity needs indexes by combining input data sources (here hotels/accommodations, accidents, public wifi logs) with customized weights
 # In the example below, we estimate the need for public lighting by combining 3 Open Data sources (city of Rome, Italy):
@@ -49,15 +53,17 @@ city_wifi_input_file_geolocated = 'output_data/wifi_geolocated.csv'
 # and more attractive from their point of view. This is why touristic-related data sources are used to calculate the lighting needs index
 indexes_calculation_parameters = {
     'lighting': {
-        'accidents': 0.5,
+        'accidents': 0.3,
         'hotels': 0.3,
-        'wifi': 0.2
+        'wifi': 0.2,
+        'lighting_claims': 0.2
     },
     'connectivity': {
-        'hotels': 0.7,
-        'wifi': 0.3
+        'hotels': 0.6,
+        'wifi': 0.4
     },
     'security': {
-        'accidents': 1
+        'accidents': 0.6,
+        'security_claims': 0.4
     },
 }

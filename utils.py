@@ -123,6 +123,24 @@ def extract_line(headers, line_elements):
     
     return line_dict
 
+# returns a list of blocks corresponding to an administrative subdivision, based on the generated config.city_grid_csv_file
+def get_city_blocks_from_administrative_subdivision(administrative_subdivision):
+    block_list = []
+    try:
+        if len(str(administrative_subdivision)) > 0:
+            for block in city_grid_df[city_grid_df['administrative_subdivision'] == int(administrative_subdivision)]['block_ID']:
+                block_name = {
+                'block_ID' : block,
+                'name' : block,
+                'administrative_subdivision' : administrative_subdivision
+                }
+                block_list.append(block_name)
+    except:
+        # do nothing. Administrative_division is not an integer
+        print("Administrative Subdivision  {administrative_subdivision} does not have the right format")
+    return block_list
+    
+
 # Gets the administrative division ID from its name
 def get_administrative_division_id_from_name(name_in_text):
     

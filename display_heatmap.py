@@ -65,19 +65,15 @@ def createHeatMapWithTimeFromIndexFile(indexFile, period_for_heatmap_parameter,h
     
     # Generate the heatmap
     heatmap_from_index = plugins.HeatMapWithTime(heat_data, name = heatmap_name + " per " + period_for_heatmap_parameter, index = heatmap_label, auto_play=False, min_opacity = 0.00, 
-                                                 radius = 175, max_opacity=0.3, use_local_extrema = True, gradient={0.0: 'lime', 0.6: 'orange', 1: 'red'})
-    # index = heatmap_index
+                                                 radius = 125, max_opacity=0.3, use_local_extrema = False, gradient={0.0: 'lime', 0.5: 'orange', 1: 'red'})
+    
+   
     return heatmap_from_index
 
 
 def get_file_name(file_extension,map_type,index_name, period_for_heatmap_parameter):
     filename = 'DINA_' + config.city_name + '_' + config.country_name + '_' +  str(config.block_width) + 'mX' + str(config.block_height) + 'm_' + index_name + '_per_' + period_for_heatmap_parameter + '_' + map_type + '.' + file_extension
     return filename
-
-# Example of market that we could add for security inded (but the best is to have a heatmap)
-# Marker(location=[41.902782,  12.496366],
-#       popup='Security Index 2/10').add_to(feature_group_security_needs)
-
 
 # Creates the heatmap
 def create_heatmap(mapname, index_input_file,period_for_heatmap_parameter):
@@ -138,6 +134,7 @@ def create_heatmap(mapname, index_input_file,period_for_heatmap_parameter):
     # Creates the heatmap correspinding to the index file provided as argument and adds it to the map
     heatmap_with_time = createHeatMapWithTimeFromIndexFile(index_input_file,period_for_heatmap_parameter, mapname).add_to(city_map)
     folium.LayerControl(collapsed=False).add_to(city_map)
+    
 
     # Save the map and display it using a web browser
     mapFileName = os.path.join('map', get_file_name('html','Heatmap',mapname.replace(" ","_"),period_for_heatmap_parameter ))
@@ -147,8 +144,8 @@ def create_heatmap(mapname, index_input_file,period_for_heatmap_parameter):
 
 def create_all_maps():
     # Create a set of maps with data grouped by months (whatever the year is: 2019 or 2020)
-    create_heatmap ('Security Needs', config.security_needs_index_file, 'month')
-    create_heatmap ('Lighting Needs', config.lighting_needs_index_file, 'month')
+    create_heatmap ('Security Needs', config.security_needs_index_file,'month')
+    create_heatmap ('Lighting Needs', config.lighting_needs_index_file,'month')
     create_heatmap ('Connectivity Needs', config.connectivity_needs_index_file, 'month')
     
     # Create a set of maps with data grouped by year-month (less data per time period but provides a better view of history)

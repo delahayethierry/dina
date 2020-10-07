@@ -15,19 +15,21 @@ def get_claims_geodata(input_file_claims):
     # Initialize statistical dictionaries
     security_related_claims_per_block = {}
     lighting_related_claims_per_block = {}
+    
+
+    
     max_security_related_claims_per_block = 1
     max_lighting_related_claims_per_block = 1
     
     # General stats
     lines_read = 0
-    lines_written = 0
+    lines_written_for_lighting_claims = 0
+    lines_written_for_security_claims = 0
 
     # Dummy year and month variables
     year = '2020'
     month = '01'
 
-    # Toggles whether the input is geolocalized
-    geolocalized_input = False
 
     # Open the wifi file
     with open(input_file_claims) as filin_claims:
@@ -40,14 +42,9 @@ def get_claims_geodata(input_file_claims):
                 # First line: headers - Only open the geolocalized file if the input is not geolocalized
                 if lines_read == 0:
                     headers = line_elements
-                    print("Reading " + input_file_wifi)
-                    
-                    if 'longitude'  in headers and 'latitude' in headers:
-                        geolocalized_input = True
-                    else:
-                        filoutclaims_geolocated = open('output_data/claims_geolocated.csv', 'w')
-                        filoutclaims_geolocated.write(';'.join(headers + ['latitude','longitude']) + '\n')
-            
+                    print("Reading " + input_file_claims)
+                 
+           
                 # General case: extract the line and parse the data
                 else:
                     line_dict = utils.extract_line(headers, line_elements)
@@ -56,37 +53,59 @@ def get_claims_geodata(input_file_claims):
                     claims_date = datetime.strptime(line_dict['Data di presentazione'].replace(',',''),"%d/%m/%Y")
                     claim_year = claims_date.year
                     claim_month = claims_date.month
-                    claim_year_month = (session_year, session_month)
+                    claim_year_month = (claim_year, claim_month)
 
                     # Parse other features
-                    claim_administrative_division = line_dict['Municipio di riferimento (tramite geo-localizzazione)']
+                    claim_administrative_subdivision = line_dict['Municipio di riferimento (tramite geo-localizzazione)']                        
+                    claim_associated_blocks =  utils.get_city_blocks_from_administrative_subdivision(claim_administrative_subdivision)
+                    
                     claim_typecode = line_dict['Argomento - codice']
 
-                    # Claim types. 150 is lighting, second list is security linked
+                    # Claim types. 150 is lighting, second list is security linked based on Roma City claim management system
                     claim_type = None
                     if claim_typecode in ['150']:
-                        claim_type = 'Lighting'
-                    if claim_typecode in ['296','298','258','259','380','48','288','47','319','49','300','50']:
-                        claim_type = 'Security'
-
-                    # Lighting claim
-                    if claim_typecode in ['150']:
-                        if claim_administrative_division in lighting_related_claims_per_block:
-                            lighting_related_claims_per_block[claim_administrative_division] = 0
-                        lighting_related_claims_per_block[claim_administrative_division] += 1
-                        if lighting_related_claims_per_block[claim_administrative_division] > max_lighting_related_claims_per_block:
-                            max_lighting_related_claims_per_block = lighting_related_claims_per_block[claim_administrative_division]
-
-                    # Security claim
-                    elif claim_typecode in ['296','298','258','259','380','48','288','47','319','49','300','50']:
-                        if claim_administrative_division in security_related_claims_per_block:
-                            security_related_claims_per_block[claim_administrative_division] = 0
-                        security_related_claims_per_block[claim_administrative_division] += 1
-                        if security_related_claims_per_block[claim_administrative_division] > max_security_related_claims_per_block:
-                            max_security_related_claims_per_block = security_related_claims_per_block[claim_administrative_division]
+                        claim_type = 'lighting_claim'
+                        
+                        for lighting_claim_block_details in claim_associated_blocks:
+                            
+                            lighting_claim_block_name = lighting_claim_block_details['name']
+                        
+                            # Add the claims to the statistics
+                            if lighting_claim_block_name not in lighting_related_claims_per_block:
+                                lighting_related_claims_per_block[lighting_claim_block_name] = lighting_claim_block_details
+                                lighting_related_claims_per_block[lighting_claim_block_name]['claims_per_month'] = {}
+                           
+                            if claim_year_month not in lighting_related_claims_per_block[lighting_claim_block_name]['claims_per_month']:
+                                lighting_related_claims_per_block[lighting_claim_block_name]['claims_per_month'][claim_year_month] = {}
+                                lighting_related_claims_per_block[lighting_claim_block_name]['claims_per_month'][claim_year_month]['nb_claims'] = 0
+                            lighting_related_claims_per_block[lighting_claim_block_name]['claims_per_month'][claim_year_month]['nb_claims'] += 1
+                            
+                            if lighting_related_claims_per_block[lighting_claim_block_name]['claims_per_month'][claim_year_month]['nb_claims'] > max_lighting_related_claims_per_block:
+                                max_lighting_related_claims_per_block = lighting_related_claims_per_block[lighting_claim_block_name]['claims_per_month'][claim_year_month]['nb_claims']
+                        
+                    else:        
+                        if claim_typecode in ['296','298','258','259','380','48','288','47','319','49','300','50']:
+                            claim_type = 'security_claim'
+                            for security_claim_block_details in claim_associated_blocks:
+                                    
+                                    security_claim_block_name = security_claim_block_details['name']
+                                
+                                    # Add the claims to the statistics
+                                    if security_claim_block_name not in security_related_claims_per_block:
+                                        security_related_claims_per_block[security_claim_block_name] = security_claim_block_details
+                                        security_related_claims_per_block[security_claim_block_name]['claims_per_month'] = {}
+                                
+                                    if claim_year_month not in security_related_claims_per_block[security_claim_block_name]['claims_per_month']:
+                                        security_related_claims_per_block[security_claim_block_name]['claims_per_month'][claim_year_month] = {}
+                                        security_related_claims_per_block[security_claim_block_name]['claims_per_month'][claim_year_month]['nb_claims'] = 0
+                                    security_related_claims_per_block[security_claim_block_name]['claims_per_month'][claim_year_month]['nb_claims'] += 1
+                                    
+                                    if security_related_claims_per_block[security_claim_block_name]['claims_per_month'][claim_year_month]['nb_claims'] > max_security_related_claims_per_block:
+                                        max_security_related_claims_per_block = security_related_claims_per_block[security_claim_block_name]['claims_per_month'][claim_year_month]['nb_claims']                            
+                    
             
                 lines_read += 1
-                if lines_read % 1000 == 0:
+                if lines_read % 500 == 0:
                     print(f'Read {lines_read} lines')
 
             except StopIteration:
@@ -94,30 +113,46 @@ def get_claims_geodata(input_file_claims):
             except UnicodeDecodeError:
                 print(f'Error: could not decode line {lines_read}')
 
-        # Close the geolocalized file if needed
-        if not geolocalized_input:
-            filoutclaims_geolocated.close()
-
-    # Open the output file
-    with open('output_data/wifi.csv', 'w') as filout:
+    # Need to save the 2 files
+    
+    # Open the lighting_claims output file
+    with open('output_data/lighting_claims.csv', 'w') as filout:
 
         # Print headers
-        filout.write(utils.write_index_headers('wifi')+ '\n')
+        filout.write(utils.write_index_headers('lighting_claims')+ '\n')
 
         # Loop over the blocks and fill the lines
-        for wifi_block in security_related_claims_per_block:
-            wifi_usage_block_details = security_related_claims_per_block[wifi_block]
-            for session_year_month in security_related_claims_per_block[wifi_block]['usage_per_month']:
-                wifi_usage_per_block_index = (wifi_usage_block_details['usage_per_month'][session_year_month]['wifi_usage'] / max_wifi_usage_per_block) * 10
-                line_out_elements = [str(i) for i in [wifi_usage_block_details['block_ID'], wifi_usage_block_details['administrative_subdivision'], session_year_month[0], session_year_month[1], wifi_usage_per_block_index]]
+        for lighting_claim_block in lighting_related_claims_per_block:
+            lighting_claim_block_details = lighting_related_claims_per_block[lighting_claim_block]
+            for session_year_month in lighting_claim_block_details['claims_per_month']:
+                lighting_claims_per_block_index = (lighting_claim_block_details['claims_per_month'][session_year_month]['nb_claims'] / max_lighting_related_claims_per_block) * 10
+                line_out_elements = [str(i) for i in [lighting_claim_block_details['block_ID'], lighting_claim_block_details['administrative_subdivision'], 
+                                                      session_year_month[0], session_year_month[1], lighting_claims_per_block_index]]
                 filout.write(','.join(line_out_elements) + '\n')
-                lines_written += 1
+                lines_written_for_lighting_claims += 1
+    
+    # Open the security_claims output file
+    with open('output_data/security_claims.csv', 'w') as filout:
+
+        # Print headers
+        filout.write(utils.write_index_headers('security_claims')+ '\n')
+
+        # Loop over the blocks and fill the lines
+        for security_claim_block in security_related_claims_per_block:
+            security_claim_block_details = security_related_claims_per_block[security_claim_block]
+            for session_year_month in security_claim_block_details['claims_per_month']:
+                security_claims_per_block_index = (security_claim_block_details['claims_per_month'][session_year_month]['nb_claims'] / max_security_related_claims_per_block) * 10
+                line_out_elements = [str(i) for i in [security_claim_block_details['block_ID'], security_claim_block_details['administrative_subdivision'], 
+                                                      session_year_month[0], session_year_month[1], security_claims_per_block_index]]
+                filout.write(','.join(line_out_elements) + '\n')
+                lines_written_for_security_claims += 1
     
     # Print some stats
     print(f'Read lines: {lines_read}')
-    print(f'Written lines: {lines_written}')
+    print(f'Written lines for lighting claims: {lines_written_for_lighting_claims}')
+    print(f'Written lines for security claims: {lines_written_for_security_claims}')
 
-    return security_related_claims_per_block
+    #return security_related_claims_per_block
 
 
 
@@ -127,5 +162,5 @@ def get_claims_geodata(input_file_claims):
 # Module execution: launch main method
 if __name__ == '__main__':
     
-    get_claims_geodata(config.claims_wifi_input_file)
+    get_claims_geodata(config.city_claims_input_file)
 
