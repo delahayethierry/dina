@@ -11,8 +11,8 @@ country_name = "Italy"
 
 #
 # Size of the blocks (grid to map a city): width & length in meters
-block_width = 500
-block_height = 500
+block_width = 300
+block_height = 300
 # File where should be generated the city grid geojson file
 city_grid_geojson_file='./input_data/city_grid.geojson'
 city_grid_csv_file ='./input_data/city_grid.csv'
@@ -32,15 +32,15 @@ city_accidents_input_file = 'input_data/csv_incidenti_merge_20192020.csv'
 #File where we consolidated accommodations/hotels from the Roma Open Data portal
 #city_hotels_input_file_geolocated = 'input_data/hotel_locations_geolocalized.csv'
 
-city_hotels_input_file_geolocated = 'output_data/hotels_geolocated.csv'
-city_hotels_input_file = 'input_data/consolidated_hotels.csv'
+city_hotels_input_file_geolocated = './output_data/hotels_geolocated.csv'
+city_hotels_input_file = './input_data/consolidated_hotels.csv'
 
 #File where we consolidated anonymized wifi logs from the Roma Open Data portal
-city_wifi_input_file = 'input_data/consolidated_wifi.csv'
-city_wifi_input_file_geolocated = 'output_data/wifi_geolocated.csv'
+city_wifi_input_file = './input_data/consolidated_wifi.csv'
+city_wifi_input_file_geolocated = './output_data/wifi_geolocated.csv'
 
 #File where we consolidated claims from the Roma Open Data portal
-city_claims_input_file = 'input_data/consolidated_claims.csv'
+city_claims_input_file = './input_data/consolidated_claims.csv'
 
 
 #Index calculation. 
@@ -54,16 +54,16 @@ city_claims_input_file = 'input_data/consolidated_claims.csv'
 indexes_calculation_parameters = {
     'lighting': {
         'accidents': 0.4,
-        'hotels': 0.1,
+        'hotels': 0.2,
         'wifi': 0.2,
-        'lighting_claims': 0.3
+        'lighting_claims': 0.2
     },
     'connectivity': {
         'hotels': 0.5,
         'wifi': 0.5
     },
     'security': {
-        'accidents': 0.7,
-        'security_claims': 0.3
+        'accidents': 0.5,
+        'security_claims': 0.5
     },
 }

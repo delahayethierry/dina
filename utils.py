@@ -14,9 +14,17 @@ from shapely.geometry import Polygon
 # Local imports
 import config
 
-# Import grid csvs
+
+city_grid_dataframe = None
 administrative_subdivision_lookup_df = pd.read_csv(config.administrative_subdivision_lookup,names = ['data', 'id', 'display_name'])
-city_grid_df = pd.read_csv(config.city_grid_csv_file)
+
+
+def get_city_blocks_dataframe():
+    global city_grid_dataframe
+    if city_grid_dataframe is None:
+         city_grid_dataframe = pd.read_csv(config.city_grid_csv_file)
+         print("Reading City Blocks <> Latitudes/Longitudes File")
+    return city_grid_dataframe
 
 # Generate city_grid.geojson file based on a bounding box (SW-NE Coordinates to cover) and width/height
 # as defined in config.py in variables block_width and block_height
@@ -126,9 +134,10 @@ def extract_line(headers, line_elements):
 # returns a list of blocks corresponding to an administrative subdivision, based on the generated config.city_grid_csv_file
 def get_city_blocks_from_administrative_subdivision(administrative_subdivision):
     block_list = []
+    blocks_df = get_city_blocks_dataframe()
     try:
         if len(str(administrative_subdivision)) > 0:
-            for block in city_grid_df[city_grid_df['administrative_subdivision'] == int(administrative_subdivision)]['block_ID']:
+            for block in blocks_df[blocks_df['administrative_subdivision'] == int(administrative_subdivision)]['block_ID']:
                 block_name = {
                 'block_ID' : block,
                 'name' : block,
@@ -175,8 +184,9 @@ def get_city_block(longitude, latitude):
     try:
         longitude_float = float(longitude)
         latitude_float = float(latitude)
-        inblock_df = city_grid_df[(city_grid_df.sw_longitude <= longitude_float) & (city_grid_df.ne_longitude >= longitude_float) 
-                                & (city_grid_df.sw_latitude <= latitude_float) & (city_grid_df.ne_latitude >= latitude_float)]
+        blocks_df = get_city_blocks_dataframe()
+        inblock_df = blocks_df[(blocks_df.sw_longitude <= longitude_float) & (blocks_df.ne_longitude >= longitude_float) 
+                                & (blocks_df.sw_latitude <= latitude_float) & (blocks_df.ne_latitude >= latitude_float)]
         if len(inblock_df.index) > 0:
             block_name = {
             'block_ID' : inblock_df['block_ID'].iloc[0],
@@ -242,6 +252,8 @@ def get_index_headers():
 def write_index_headers(datasource_name):
 
     return ','.join(get_index_headers() + [datasource_name])
+
+
 
 
 # Module execution: launch main method

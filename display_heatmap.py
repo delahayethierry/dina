@@ -9,6 +9,7 @@ import pandas as pd
 import pyproj
 import sys
 import webbrowser
+import create_indexes
 from math import ceil
 from folium import (FeatureGroup, LayerControl, Map, Marker, plugins)
 
@@ -17,7 +18,6 @@ import config as config
 import utils
 
 # Read the city grid config
-city_grid_df = pd.read_csv(config.city_grid_csv_file)
 
 def createHeatMapWithTimeFromIndexFile(indexFile, period_for_heatmap_parameter,heatmap_name):
     print("Generating HeatMap from " + indexFile)
@@ -39,7 +39,7 @@ def createHeatMapWithTimeFromIndexFile(indexFile, period_for_heatmap_parameter,h
 
     #print('Number of rows in datafile before the association between block IDs and latitude/longitude: ', str(needs_index_df.count))
     # Use the city grid file to append the latitude/longitude of the centre of each block (useful for heatmaps) using a look-up
-    heatmap_index_df = pd.merge(left=needs_index_df, right=city_grid_df, how='left', on='block_ID')
+    heatmap_index_df = pd.merge(left=needs_index_df, right=utils.get_city_blocks_dataframe(), how='left', on='block_ID')
    
     skipped_rows = len(needs_index_df.index) - len(heatmap_index_df.index)
     print('Number of rows skipped in datafile after the association between block IDs and latitude/longitude: ', str(skipped_rows))
@@ -59,12 +59,14 @@ def createHeatMapWithTimeFromIndexFile(indexFile, period_for_heatmap_parameter,h
 
         
     if period_for_heatmap_parameter == 'month':
+        heatmap_index_df['Month'] = heatmap_index_df['Month'].astype(int)
         grouped_by_df = heatmap_index_df.sort_values(by=['Month']).groupby(by='Month')
         for _, d in grouped_by_df:
             heat_data.append([[row['centroid_latitude'], row['centroid_longitude'], row['Index']] for _, row in d.iterrows()])
-                
+        
+        print(heatmap_index_df['Month'])        
         for m in heatmap_index_df['Month'].unique().astype(int):
-            heatmap_label.append(calendar.month_name[m])
+            heatmap_label.append(str(m) + " - " + calendar.month_name[m])
         
     # Year-Month case: group by period (i.e. YEAR-MONTH like 2019-02)
     else:
@@ -77,7 +79,7 @@ def createHeatMapWithTimeFromIndexFile(indexFile, period_for_heatmap_parameter,h
     
     # Generate the heatmap
     heatmap_from_index = plugins.HeatMapWithTime(heat_data, name = heatmap_name + " per " + period_for_heatmap_parameter, index = heatmap_label, auto_play=False, min_opacity = 0.00, 
-                                                 radius = 175, max_opacity=0.3, use_local_extrema = True, gradient={0.0: 'lime', 0.5: 'orange', 1: 'red'})
+                                                 radius = 120, max_opacity=0.5, use_local_extrema = True, gradient={0.0: 'lime', 0.7: 'orange', 1: 'red'})
     
     
     return heatmap_from_index
@@ -134,7 +136,7 @@ def create_heatmap(mapname, index_input_file,period_for_heatmap_parameter):
 
     # Creates the city map
     city_map = folium.Map(location=city_coords, zoom_start=12,
-                          min_zoom=9, max_zoom=15, control_scale=True)
+                          min_zoom=10, max_zoom=15, control_scale=True)
     
     # Adds different map layers
     folium.TileLayer('cartodbpositron').add_to(city_map)
@@ -156,15 +158,16 @@ def create_heatmap(mapname, index_input_file,period_for_heatmap_parameter):
     webbrowser.open(mapFileName, new=2)
 
 def create_all_maps():
+    create_indexes.create_indexes()
     # Create a set of maps with data grouped by months (whatever the year is: 2019 or 2020)
     create_heatmap ('Security Needs', config.security_needs_index_file,'month')
     create_heatmap ('Lighting Needs', config.lighting_needs_index_file,'month')
     create_heatmap ('Connectivity Needs', config.connectivity_needs_index_file, 'month')
     
     #Create a set of maps with data grouped by year-month (less data per time period but provides a better view of history)
-    create_heatmap ('Security Needs', config.security_needs_index_file, 'year-month')
+    """create_heatmap ('Security Needs', config.security_needs_index_file, 'year-month')
     create_heatmap ('Lighting Needs', config.lighting_needs_index_file, 'year-month')
-    create_heatmap ('Connectivity Needs', config.connectivity_needs_index_file, 'year-month')
+    create_heatmap ('Connectivity Needs', config.connectivity_needs_index_file, 'year-month')"""
 
 # Module execution: launch main method
 if __name__ == '__main__':

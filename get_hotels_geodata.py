@@ -38,7 +38,7 @@ def get_hotel_geodata(input_file_hotels):
     # Open the hotels file
     with open(input_file_hotels, encoding='utf-8') as filin_hotels:
         i=0
-
+        
         while True:
 
             try:
@@ -49,10 +49,13 @@ def get_hotel_geodata(input_file_hotels):
                 # First line: headers
                 if lines_read == 0:
                     headers = line_elements
+                    print ('Found headers in ', input_file_hotels)
+                    print (headers)
                     if 'longitude'  in headers and 'latitude' in headers:
                         geolocalized_input = True
+                        print('Found geolocalized hotels data in the input file')
                     else:
-                        filout_accommodations_geolocated = open('output_data/hotels_geolocated.csv', 'w', encoding='utf-8')
+                        filout_accommodations_geolocated = open('./output_data/hotels_geolocated.csv', 'w', encoding='utf-8')
                         filout_accommodations_geolocated.write(';'.join(headers + ['latitude','longitude']) + "\n")
             
                 # General case: extract the line and parse the data
@@ -72,17 +75,15 @@ def get_hotel_geodata(input_file_hotels):
                     except:
                         print('Issue with line: ',lines_read, ' (address) = ',line_elements)
                         
-                    hotel_rooms = 0
                     accommodation_capacity = 0
                     try:
                         # We estimate here the maximum accommodation capacity. when a figure is provided under each room type (single, double, triple)
                         # we multiply the number of room x its maximum capacity
                         
                         for i, room_type in enumerate(room_types): 
-                            nb_room = line_dict.get(room_type,'0').replace(',','.')
-                           
+                            nb_room = line_dict.get(room_type,'0').replace(',00','').replace(',','.')
+                            
                             if len(nb_room) > 0:
-                                hotel_rooms += int(float(nb_room))
                                 accommodation_capacity += int(float(nb_room))*(i+1)
                     except:
                         print('Issue with line: ',lines_read, ' (room types) = ',line_elements)
@@ -149,6 +150,7 @@ def get_hotel_geodata(input_file_hotels):
         # Close the geolocalized file if needed
         if not geolocalized_input:
             filout_accommodations_geolocated.close()
+            #Removed this line because it was causing an issue
 
     # Open the output file
     with open('output_data/hotels.csv', 'w') as filout:

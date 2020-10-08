@@ -19,7 +19,7 @@ COUNTRY_NAME = config.country_name
 HERE_API_KEY = os.getenv("here_api_key")
 wifi_geolocation_cache = {}
 # Main method
-def get_wifi_geodata(input_file_wifi):
+def get_wifi_logs_geodata(input_file_wifi):
 
     # Initialize statistical dictionaries
     wifi_usage_per_block = {}
@@ -123,9 +123,9 @@ def get_wifi_geodata(input_file_wifi):
                 print(f'Error: could not decode line {lines_read}')
 
         # Close the geolocalized file if needed
-        if not geolocalized_input:
-            filout_wifi_geolocated.close()
-
+        #if not geolocalized_input:
+        #    filout_wifi_geolocated.close()
+        #Removed this line because it was causing an issue
     # Open the output file
     with open('output_data/wifi.csv', 'w') as filout:
 
@@ -154,5 +154,5 @@ def get_wifi_geodata(input_file_wifi):
 if __name__ == '__main__':
     
     #get_wifi_geodata(config.city_wifi_input_file)
-    get_wifi_geodata(config.city_wifi_input_file_geolocated)
+    get_wifi_logs_geodata(config.city_wifi_input_file_geolocated)
 

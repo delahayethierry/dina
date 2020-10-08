@@ -97,27 +97,28 @@ def download_and_merge_claims():
 # Processes all of the input data. Some of the inputs require getting additional data from APIs (typically geocoding)
 def process_input_data():
 
+    
     print("#### Step 1/7:  Generating the city grid ################################################")
     utils.generate_city_grid()
+    print("#### Step 3/7:  Generating geolocated accommodations input file #########################")
+    get_hotels_geodata.get_hotel_geodata(config.city_hotels_input_file_geolocated)
     print("#### Step 2/7:  Generating geolocated accidents input file ##############################")
     get_accidents_geodata.get_accidents_geodata(config.city_accidents_input_file)
-    print("#### Step 3/7:  Generating geolocated accommodations input file #########################")
-    get_hotel_geodata.get_hotel_geodata(config.city_hotels_input_file)
     print("#### Step 4/7:  Generating geolocated wifi input file ###################################")
-    get_wifi_geodata (config.city_wifi_input_file)
+    get_wifi_logs_geodata.get_wifi_logs_geodata(config.city_wifi_input_file_geolocated)
     print("#### Step 6/7:  Recreating connectivity, lighting, security needs indexes ###############")
     create_indexes.create_indexes()
     print("#### Step 7/7:  Generating and displaying the heatmaps ##################################")
     display_heatmap.create_all_maps()
-    return
+    
 
 
 # Module execution: launch main method
 if __name__ == '__main__':
     #download_and_merge_claims()
-    download_and_merge_hotels()
+    #download_and_merge_hotels()
     #download_and_merge_wifi()
-    #process_input_data()
+    process_input_data()
 
 
 

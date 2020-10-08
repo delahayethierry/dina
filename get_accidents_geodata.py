@@ -1,4 +1,5 @@
 import datetime
+from datetime import datetime
 import math
 import utils
 
@@ -40,7 +41,10 @@ def get_accidents_geodata(input_file_accidents):
 
                 # Try to extract the date, and default to dummy values if there is an error
                 try:
-                    accident_datetime = datetime.datetime.strptime(accident_datetime_str, '%d/%m/%Y %H:%M:%S')
+                    if len(accident_datetime_str) > 10:
+                        accident_datetime = datetime.strptime(accident_datetime_str, '%d/%m/%Y %H:%M:%S')
+                    else:
+                        accident_datetime = datetime.strptime(accident_datetime_str, '%d/%m/%Y')
                     accident_year = str(accident_datetime.year)
                     accident_month = str(accident_datetime.month)
                 except:
@@ -61,7 +65,8 @@ def get_accidents_geodata(input_file_accidents):
                         max_accidents_per_block = int(accidents_per_block[accident_block_name][accident_year_month][accident_lighting])
         
             lines_read += 1
-
+            if lines_read % 50 == 0:
+                print(f'{lines_read} lines processed on', datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
     # Open the output file
     with open('output_data/accidents.csv', 'w') as filout:
 
