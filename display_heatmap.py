@@ -165,9 +165,9 @@ def create_all_maps():
     create_heatmap ('Connectivity Needs', config.connectivity_needs_index_file, 'month')
     
     #Create a set of maps with data grouped by year-month (less data per time period but provides a better view of history)
-    """create_heatmap ('Security Needs', config.security_needs_index_file, 'year-month')
+    create_heatmap ('Security Needs', config.security_needs_index_file, 'year-month')
     create_heatmap ('Lighting Needs', config.lighting_needs_index_file, 'year-month')
-    create_heatmap ('Connectivity Needs', config.connectivity_needs_index_file, 'year-month')"""
+    create_heatmap ('Connectivity Needs', config.connectivity_needs_index_file, 'year-month')
 
 # Module execution: launch main method
 if __name__ == '__main__':
