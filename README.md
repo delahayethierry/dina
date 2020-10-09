@@ -102,16 +102,16 @@ Corresponding indexes files (csv) are available here:
 * [security_needs_index.csv](./map/security_needs_index.csv)
 * [connectivity_needs_index.csv](./map/connectivity_needs_index.csv)
 
-Example of Heatmap for the city of Roma and Lighting Needs estimation in November (centered on Roma Municipio V):
+Example of Heatmap for the city of Roma and Lighting Needs estimation in November (centred on Roma Municipio V):
 
 ![Example of Heatmap for the city of Roma and Lighting Needs estimation in November](./documentation/DINA_HeatMap_Example_09.png)
 In the example above, we did not deduct any special lighting needs inside the "Cimitero monumentale di Campo Verano"... data is talking!
 
 
-Example of Heatmap for the city of Roma and estimated historical Wi-fi connectivity Needs in October 2019 (centered on Roma Municipio I):
+Example of Heatmap for the city of Roma and estimated historical Wi-fi connectivity Needs in October 2019 (centred on Roma Municipio I):
 
 ![Example of Heatmap for the city of Roma and estimated historical Wi-fi connectivity Needs in October 2019](./documentation/DINA_HeatMap_Example_11.png)
-In the example above (using another type of display, closer to a 'Control Room'), the wi-fi connectivity need is probably influenced by a higher concentration of accomodations attracting tourists
+In the example above (using another type of display, closer to a 'Control Room'), the wi-fi connectivity need is probably influenced by a higher concentration of accommodations attracting tourists
 
 Example of animated Heatmap for the city of Roma showing estimated lighting Needs estimation overtime from January to December:
 
