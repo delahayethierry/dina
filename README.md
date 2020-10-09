@@ -88,27 +88,34 @@ Open a command line and go to the folder where DINA has been downloaded and comm
 
 It will generate 2 sets of 3 html files containing the maps in the sub-folder ./map/ and try to open them with a web browser:
 Indexes per month (whatever the year is, i.e. data is consolidated per month)
-* [DINA_Rome_Italy_800mX800m_Lighting_Needs_per_month_Heatmap.html](./map/DINA_Rome_Italy_800mX800m_Lighting_Needs_per_month_Heatmap.html)
-* [DINA_Rome_Italy_800mX800m_Security_Needs_per_month_Heatmap.html](./map/DINA_Rome_Italy_800mX800m_Security_Needs_per_month_Heatmap.html)
-* [DINA_Rome_Italy_800mX800m_Connectivity_Needs_per_month_Heatmap.html](./map/DINA_Rome_Italy_800mX800m_Connectivity_Needs_per_month_Heatmap.html)
+* [DINA_Rome_Italy_300mX300m_Lighting_Needs_per_month_Heatmap.html](./map/DINA_Rome_Italy_300mX300m_Lighting_Needs_per_month_Heatmap.html)
+* [DINA_Rome_Italy_300mX300m_Security_Needs_per_month_Heatmap.html](./map/DINA_Rome_Italy_300mX300m_Security_Needs_per_month_Heatmap.html)
+* [DINA_Rome_Italy_300mX300m_Connectivity_Needs_per_month_Heatmap.html](./map/DINA_Rome_Italy_300mX300m_Connectivity_Needs_per_month_Heatmap.html)
 
 Indexes per year-month (better view for historical indexes per month, since 2019)
-* [DINA_Rome_Italy_800mX800m_Lighting_Needs_per_year-month_Heatmap.html](./map/DINA_Rome_Italy_800mX800m_Lighting_Needs_per_year-month_Heatmap.html)
-* [DINA_Rome_Italy_800mX800m_Security_Needs_per_year-month_Heatmap.html](./map/DINA_Rome_Italy_800mX800m_Security_Needs_per_year-month_Heatmap.html)
-* [DINA_Rome_Italy_800mX800m_Connectivity_Needs_per_year-month_Heatmap.html](./map/DINA_Rome_Italy_800mX800m_Connectivity_Needs_per_year-month_Heatmap.html)
+* [DINA_Rome_Italy_300mX300m_Lighting_Needs_per_year-month_Heatmap.html](./map/DINA_Rome_Italy_300mX300m_Lighting_Needs_per_year-month_Heatmap.html)
+* [DINA_Rome_Italy_300mX300m_Security_Needs_per_year-month_Heatmap.html](./map/DINA_Rome_Italy_300mX300m_Security_Needs_per_year-month_Heatmap.html)
+* [DINA_Rome_Italy_300mX300m_Connectivity_Needs_per_year-month_Heatmap.html](./map/DINA_Rome_Italy_300mX300m_Connectivity_Needs_per_year-month_Heatmap.html)
+
+Corresponding indexes files (csv) are available here:
+* [lighting_needs_index.csv](./map/lighting_needs_index.csv)
+* [security_needs_index.csv](./map/security_needs_index.csv)
+* [connectivity_needs_index.csv](./map/connectivity_needs_index.csv)
+
+Example of Heatmap for the city of Roma and Lighting Needs estimation in November (centered on Roma Municipio V):
+
+![Example of Heatmap for the city of Roma and Lighting Needs estimation in November](./documentation/DINA_HeatMap_Example_09.png)
+In the example above, we did not deduct any special lighting needs inside the "Cimitero monumentale di Campo Verano"... data is talking!
 
 
+Example of Heatmap for the city of Roma and estimated historical Wi-fi connectivity Needs in October 2019 (centered on Roma Municipio I):
 
-Example of Heatmap for the city of Roma and Lighting Needs estimation in October:
-![Example of Heatmap for the city of Roma and Lighting Needs estimation in October](./documentation/DINA_HeatMap_Example_01.png)
+![Example of Heatmap for the city of Roma and estimated historical Wi-fi connectivity Needs in October 2019](./documentation/DINA_HeatMap_Example_11.png)
+In the example above (using another type of display, closer to a 'Control Room'), the wi-fi connectivity need is probably influenced by a higher concentration of accomodations attracting tourists
 
+Example of animated Heatmap for the city of Roma showing estimated lighting Needs estimation overtime from January to December:
 
-Example of Heatmap for the city of Roma and estimated historical security Needs in September 2019:
-![Example of Heatmap for the city of Roma and estimated historical security Needs in September 2019](./documentation/DINA_HeatMap_Example_02.png)
-
-
-Example of Heatmap for the city of Roma and estimated historical security Needs estimation from January 2019 to February 2020:
-![Example of Heatmap for the city of Roma and estimated historical security Needs estimation from January 2019 to February 2020](./documentation/DINA_HeatMap_Example_03.gif)
+![Example of animated Heatmap for the city of Roma showing estimated lighting Needs estimation overtime from January to December](./documentation/DINA_HeatMap_Example_04.gif)
 
 
 
@@ -135,13 +142,34 @@ Shapes of Administrative Subdivisions | Shapes of Roma Municipi in geojson forma
 ## How to change important parameters
 
 ### Grid size
-The grid size governs the granularity of the indexes, and in turn of the heatmaps. The size of the blocks is set in two variables in config.py :
+The grid size governs the granularity of the indexes, and in turn of the heatmaps. The size of the blocks is set in two variables in `config.py`:
+```
 block_width = 300
 block_height = 300
-To change the grid size, change these values, and re-run the process_input_data.process_input_data() method to re-generate the indexes with the new grid.
+```
+To change the grid size, change these values, and re-run the `process_input_data.process_input_data()` method to re-generate the indexes with the new grid.
 
 ### Weight of the data sources in the indexes
-The final three indexes (lighting, connectivity and security) are weighted sums of indexes over the different data sources. The weighing is set in the indexes_calculation_parameters dictionary in the config.py module. You can modify the values of the dictionary in order to change the weights of the data sources in each index.
+The final three indexes (lighting, connectivity and security) are weighted sums of indexes over the different data sources. The weighing is set in the `indexes_calculation_parameters` dictionary in the `config.py` module. You can modify the values of the dictionary (float from 0.0 to 1.0) in order to change the weights of the data sources in each index and thus influence the global index, based on your analysis of which data is more relevant to infer implicit requirements from citizens and visitors.
+
+```
+indexes_calculation_parameters = {
+    'lighting': {
+        'accidents': 0.4,
+        'hotels': 0.2,
+        'wifi': 0.2,
+        'lighting_claims': 0.2
+    },
+    'connectivity': {
+        'hotels': 0.5,
+        'wifi': 0.5
+    },
+    'security': {
+        'accidents': 0.5,
+        'security_claims': 0.5
+    },
+}
+```
 
 
 ## Python modules in this repository
@@ -150,25 +178,25 @@ The final three indexes (lighting, connectivity and security) are weighted sums 
 Contains general configuration, location of input files, and the weighting of the different data sources for the three final indexes
 
 ### create_indexes.py
-The main method of this module generates the different indexes from the processed files in output_data. It uses the weights from config.py
+The main method of this module generates the different indexes from the processed files in `output_data`. It uses the weights from `config.py`
 
 ### display_heatmap.py
 The main method of this module takes the generated indexes and generates the final heatmaps
 
 ### get_accidents_geodata.py
-The main method of this module processes the accidents data from the input_data folder, and counts the number of accidents that occurred with insufficient lighting per grid block and month. It is called from process_input_data.py
+The main method of this module processes the accidents data from the input_data folder, and counts the number of accidents that occurred with insufficient lighting per grid block and month. It is called from `process_input_data.py`
 
 ### get_claims_geodata.py
-The main method of this module processes the claims data from the input_data folder. As the claims data is only available at the administrative division level, the claims relative to the target categories (security and lighting) are counted by month and by administrative division. All the blocks in an administrative division are then given the score corresponding to that division. It is called from process_input_data.py
+The main method of this module processes the claims data from the `input_data` folder. As the claims data is only available at the administrative division level, the claims relative to the target categories (security and lighting) are counted by month and by administrative subdivision (e.g. municipio in the case of Rome). All the blocks in an administrative division are then given the score corresponding to that division. It is called from `process_input_data.py`
 
 ### get_hotels_geodata.py
-The main method of this module processes the hotel location data from the input_data folder. If the processed data is not geolocalized (i.e if the latitude and longitude columns are not present), the module calls the HERE api to geolocalize the hotel from its address, and outputs the input file with the added geolocalization columns as well (this helps saving extra calls). The main output is a count of rooms by grid block and month. It is called from process_input_data.py
+The main method of this module processes the hotel location data from the `input_data` folder. If the processed data is not geolocalized (i.e if the latitude and longitude columns are not present), the module calls the HERE api to geolocalize the hotel from its address, and outputs the input file with the added geolocalization columns as well (this helps saving extra calls). The main output is a count of rooms by grid block and month. It is called from `process_input_data.py`
 
 ### get_wifi_logs_geodata.py
-The main method of this module processes the wifi usage data from the input_data folder. If the processed data is not geolocalized (i.e if the latitude and longitude columns are not present), the module calls the HERE api to geolocalize the wifi hotspot from its address, and outputs the input file with the added geolocalization columns as well. Within the processing, coordinates for the wifi spots is also cached, as there can be many usage logs for a single wifi hostpot. The main output is the overall download data usage by grid block and month. It is called from process_input_data.py
+The main method of this module processes the wifi usage data from the `input_data` folder. If the processed data is not geolocalized (i.e if the latitude and longitude columns are not present), the module calls the HERE api to geolocalize the wifi hotspot from its address, and outputs the input file with the added geolocalization columns as well. Within the processing, coordinates for the wifi spots is also cached, as there can be many usage logs for a single wifi hostpot. The main output is the overall download data usage by grid block and month. It is called from `process_input_data.py`
 
 ### process_input_data.py
-The main method of this module processes the different data sources located in the input_data folder. It calls individual data processing modules for each of the datasets (accidents, hotels, wifi and claims)
+The main method of this module processes the different data sources located in the `input_data` folder. It calls individual data processing modules for each of the datasets (accidents, hotels, wifi and claims)
 
 ### utils.py
 This module contains various methods that are used by other modules. In particular, it contains the method to call the geolocalization API (HERE), and different utilities for generating the geographical grid.
