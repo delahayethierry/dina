@@ -1,19 +1,23 @@
-import get_accidents_geodata
-import get_hotels_geodata
-import get_wifi_logs_geodata
+
+import chardet
 import config
-import utils
-import create_indexes
-import display_heatmap
+import csv
+import glob
+import numpy as np
 import os
 import os.path
-from os import path
-import glob
 import pandas as pd
 import requests
-import csv
-import numpy as np
-import chardet
+import utils
+from os import path
+
+# Local imports
+import create_indexes
+import display_heatmap
+import get_accidents_geodata
+import get_claims_geodata
+import get_hotels_geodata
+import get_wifi_logs_geodata
 
 # Reads a .txt file containing all the URLs to open data files
 def download_open_data_files(filename, foldername):
@@ -106,6 +110,8 @@ def process_input_data():
     get_accidents_geodata.get_accidents_geodata(config.city_accidents_input_file)
     print("#### Step 4/7:  Generating geolocated wifi input file ###################################")
     get_wifi_logs_geodata.get_wifi_logs_geodata(config.city_wifi_input_file_geolocated)
+    print("#### Step 5/7:  Generating claims wifi input file #######################################")
+    get_claims_geodata.get_claims_geodata(config.city_claims_input_file)
     print("#### Step 6/7:  Recreating connectivity, lighting, security needs indexes ###############")
     create_indexes.create_indexes()
     print("#### Step 7/7:  Generating and displaying the heatmaps ##################################")

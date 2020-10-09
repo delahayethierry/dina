@@ -132,6 +132,18 @@ Shapes of Administrative Subdivisions | Shapes of Roma Municipi in geojson forma
 [Single Reporting System of Roma Capitale. Reporting data for the year 2020](https://dati.comune.roma.it/catalog/dataset/sus1) | The Dataset aims to represent a framework for managing the flow of reports from citizens through the SUS (Single Reporting System https://www.comune.roma.it/web/it/di-la-tua-segnala.page ), steps and actions that are taken from opening to closing the issue. The reports present are geo-localized by municipality and by subject - the data of the reports published are as they appear from the user reports, regardless of the veracity certified or not with respect to what is reported. | [Roma Open Data Portal](https://dati.comune.roma.it) | [Single Reporting System of Roma Capitale. Reporting data for the year 2020](https://dati.comune.roma.it/catalog/dataset/sus1) | 01/2020 to 07/2020 | We used a subset of claims types (aka 'Argomento - codice')
 
 
+## How to change important parameters
+
+### Grid size
+The grid size governs the granularity of the indexes, and in turn of the heatmaps. The size of the blocks is set in two variables in config.py :
+block_width = 300
+block_height = 300
+To change the grid size, change these values, and re-run the process_input_data.process_input_data() method to re-generate the indexes with the new grid.
+
+### Weight of the data sources in the indexes
+The final three indexes (lighting, connectivity and security) are weighted sums of indexes over the different data sources. The weighing is set in the indexes_calculation_parameters dictionary in the config.py module. You can modify the values of the dictionary in order to change the weights of the data sources in each index.
+
+
 ## Python modules in this repository
 
 ### config.py
