@@ -56,7 +56,7 @@ Things you need to install the software and how to install them.
 
 
 You need to install:
-1. a recent version of Python (see [for instance this package for Windows](https://www.python.org/downloads/release/python-385/))
+1. a recent version of Python (at least 3.7.6, see [for instance this package for Windows](https://www.python.org/downloads/release/python-385/))
 2. the pip tool in order to install Python packages (see [installation guide](https://www.liquidweb.com/kb/install-pip-windows/))
 
 Once pip is installed, run the following command to download and install the requested python packages (folium for maps display, pandas for csv files processing)  line and typing
@@ -86,13 +86,13 @@ Open a command line and go to the folder where DINA has been downloaded and comm
 
 ### Examples of generated maps
 
-It will generate 2 sets 3 html files containing the maps in the sub-folder ./map/ and try to open them with a web browser:
-Indexes per months (whatever the year is, i.e. data is consolidated per month)
+It will generate 2 sets of 3 html files containing the maps in the sub-folder ./map/ and try to open them with a web browser:
+Indexes per month (whatever the year is, i.e. data is consolidated per month)
 * [DINA_Rome_Italy_800mX800m_Lighting_Needs_per_month_Heatmap.html](./map/DINA_Rome_Italy_800mX800m_Lighting_Needs_per_month_Heatmap.html)
 * [DINA_Rome_Italy_800mX800m_Security_Needs_per_month_Heatmap.html](./map/DINA_Rome_Italy_800mX800m_Security_Needs_per_month_Heatmap.html)
 * [DINA_Rome_Italy_800mX800m_Connectivity_Needs_per_month_Heatmap.html](./map/DINA_Rome_Italy_800mX800m_Connectivity_Needs_per_month_Heatmap.html)
 
-Indexes per year-months (better view for historical indexes per months, since 2019)
+Indexes per year-month (better view for historical indexes per month, since 2019)
 * [DINA_Rome_Italy_800mX800m_Lighting_Needs_per_year-month_Heatmap.html](./map/DINA_Rome_Italy_800mX800m_Lighting_Needs_per_year-month_Heatmap.html)
 * [DINA_Rome_Italy_800mX800m_Security_Needs_per_year-month_Heatmap.html](./map/DINA_Rome_Italy_800mX800m_Security_Needs_per_year-month_Heatmap.html)
 * [DINA_Rome_Italy_800mX800m_Connectivity_Needs_per_year-month_Heatmap.html](./map/DINA_Rome_Italy_800mX800m_Connectivity_Needs_per_year-month_Heatmap.html)
@@ -130,4 +130,34 @@ Dataset Name | Description | Provider | Resource | Period Covered | Comments
 [Public wifi Data](https://dati.comune.roma.it/catalog/dataset/wifi2020) | Anonymized web browsing sessions found in the Rome WiFi system | [Roma Open Data Portal](https://dati.comune.roma.it) | [Anonymized web browsing sessions found in the Rome WiFi system](https://dati.comune.roma.it/catalog/dataset/wifi2020) | 04/01/2020 to 30/09/2020 |  
 Shapes of Administrative Subdivisions | Shapes of Roma Municipi in geojson format (municipi.geojson) | Roma Urbanistica | https://romaurbanistica.carto.com/tables/municipi/public | N/A | 
 [Single Reporting System of Roma Capitale. Reporting data for the year 2020](https://dati.comune.roma.it/catalog/dataset/sus1) | The Dataset aims to represent a framework for managing the flow of reports from citizens through the SUS (Single Reporting System https://www.comune.roma.it/web/it/di-la-tua-segnala.page ), steps and actions that are taken from opening to closing the issue. The reports present are geo-localized by municipality and by subject - the data of the reports published are as they appear from the user reports, regardless of the veracity certified or not with respect to what is reported. | [Roma Open Data Portal](https://dati.comune.roma.it) | [Single Reporting System of Roma Capitale. Reporting data for the year 2020](https://dati.comune.roma.it/catalog/dataset/sus1) | 01/2020 to 07/2020 | We used a subset of claims types (aka 'Argomento - codice')
+
+
+## Python modules in this repository
+
+### config.py
+Contains general configuration, location of input files, and the weighting of the different data sources for the three final indexes
+
+### create_indexes.py
+The main method of this module generates the different indexes from the processed files in output_data. It uses the weights from config.py
+
+### display_heatmap.py
+The main method of this module takes the generated indexes and generates the final heatmaps
+
+### get_accidents_geodata.py
+The main method of this module processes the accidents data from the input_data folder, and counts the number of accidents that occurred with insufficient lighting per grid block and month. It is called from process_input_data.py
+
+### get_claims_geodata.py
+The main method of this module processes the claims data from the input_data folder. As the claims data is only available at the administrative division level, the claims relative to the target categories (security and lighting) are counted by month and by administrative division. All the blocks in an administrative division are then given the score corresponding to that division. It is called from process_input_data.py
+
+### get_hotels_geodata.py
+The main method of this module processes the hotel location data from the input_data folder. If the processed data is not geolocalized (i.e if the latitude and longitude columns are not present), the module calls the HERE api to geolocalize the hotel from its address, and outputs the input file with the added geolocalization columns as well (this helps saving extra calls). The main output is a count of rooms by grid block and month. It is called from process_input_data.py
+
+### get_wifi_logs_geodata.py
+The main method of this module processes the wifi usage data from the input_data folder. If the processed data is not geolocalized (i.e if the latitude and longitude columns are not present), the module calls the HERE api to geolocalize the wifi hotspot from its address, and outputs the input file with the added geolocalization columns as well. Within the processing, coordinates for the wifi spots is also cached, as there can be many usage logs for a single wifi hostpot. The main output is the overall download data usage by grid block and month. It is called from process_input_data.py
+
+### process_input_data.py
+The main method of this module processes the different data sources located in the input_data folder. It calls individual data processing modules for each of the datasets (accidents, hotels, wifi and claims)
+
+### utils.py
+This module contains various methods that are used by other modules. In particular, it contains the method to call the geolocalization API (HERE), and different utilities for generating the geographical grid.
 
