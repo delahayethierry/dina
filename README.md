@@ -3,7 +3,7 @@
 
 ---
 
-<p align="center"> A tool which leverages Public Administration Open Data to provide cities with actionable insights about what citizens implicitly need in terms of security, lighting and connectivity
+<p align="center"> A tool which leverages Public Administration Open Data  to provide cities with actionable insights about what citizens implicitly need in terms of security, lighting and connectivity
     <br> 
 </p>
 
@@ -16,27 +16,41 @@
 
 ##  About <a name = "about"></a>
 
-This project is a proposal submitted in the scope of an Innocentive Challenge [New Smart City Solutions Enabled by Open Data](https://openinnovability.enel.com/projects/New-smart-city-solutions-enabled-by-open-data)
-Our targeted users are: 
-1.	Chief Operating Officer and/or operations of the city’s public lighting department
-2.	Analysts working in the Urban Planning department
-3.	Tourist Office officers (City Destination Marketing Organizations)
+This project called DINA is leveraging Open Data from the city of Rome. It was a proposal submitted in the scope of an Open Innovation challenge organized by [Wazoku Innocentive](https://www.innocentive.com/) and sponsored by EnelX: [New Smart City Solutions Enabled by Open Data](https://openinnovability.enel.com/projects/New-smart-city-solutions-enabled-by-open-data)
 
-The solution prototyped in the scope of this project is called DINA (Data-driven Implicit Needs Analyzer) and is made of 2 main components:
+Full report (edited to make it open source) can be found here: [DINA_Project_Report.docx](./documentation/DINA_Project_Report.docx)
 
-1.	DINA Open Data ingestion module
-It aims at becoming a transversal component, supported by an extensible framework, which gathers, cleans, enriches and normalizes Open Data (coming from Public Administrations or not) in order to provide Smart City analytics solutions with 3 indexes representing the needs of people living in or visiting the city: 
-•	Security Needs
-•	Lighting Needs
-•	Connectivity Needs
-These indexes will be delivered per geographical location (square of 20m x 20m) and per month.
+<b>Abstract:</b>
 
-Note: our vision is obviously to increase granularity (lower the size of the geographical areas, provide data per day or even per hour) when Public Administration Open Data will permit and this is why Enel X has a key role to play to influence City’s Open Data roadmaps.
+<i><b>DINA – “Data-driven Implicit Needs Analyzer"</b> can be considered as a Minimum Viable Product supporting <b>Smart Cities</b>, which aims at displaying on an heatmap a set of indexes (security needs, lighting needs, connectivity needs) based on <b>implicit citizen & tourist needs</b>, inferred from Public Administration Open Data.
+
+Citizens can play a crucial role in identifying or actively intervening in urban challenges, often providing new perspectives and solutions. Collaboration between citizens and Public Administration is an area where several “Smart Cities” actors are investing (fully in line with the United Nations Sustainable Development Goals). 
+When it comes to <b>Urban Planning</b>, <b>Public Lighting</b> or <b>Tourism Development</b>, it is quite common to get feedback and needs explicitly from citizens and visitors via dedicated studies, portals or apps. We think that we can complement this understanding of citizens and visitors by <b>inferring their needs based on Public Administration Open Data</b>.
+
+By looking at accidents logs, Public Wi-fi usage, the location and capacity of touristic accommodations and claims/complaints (reports), we can deduct areas where people’s life could be improved.
+
+We have built a Minimum Viable Product which is leveraging Open Data produced by the <b>city of Rome</b>, Italy from January 2019 to September 2020. Thanks to 5 datasets (71Mo / 350 000+ rows of data processed), we have been able to demonstrate that we can spot areas in Rome where there are higher needs over time in terms of security enforcement via cameras, public Internet connectivity and public lighting. 
+Keywords: City Analytics, Smart Public Lighting, Residents, Tourists, Security, Comfort, Decision Support, Italy
+</i>
+
+<b>The solution:</b>
+
+The solution developed in the scope of this project is made of 2 main components:
+
+1.	DINA Open Data ingestion module: 
+
+Gathers, cleans, enriches and normalizes Open Data (coming from Public Administrations or not) in order to provide Smart City analytics solutions with 3 indexes representing the needs of people living in or visiting the city: 
+-	Security Needs
+-	Lighting Needs
+-	Connectivity Needs
+
+These indexes will be delivered per "geographical location" (square of 300m x 300m) and per month.
+
+Note: our vision is obviously to increase granularity (lower the size of the geographical areas, provide data per day or even per hour) when Public Administration Open Data will permit.
 
 2.	DINA “Needs Indexes” Visualization tool
-The solution includes a data visualization module so that users could act according to the insights generated by the first module: maps/heatmap (with the possibility to browse per time period - in our case: month- and to filter by type of index). 
-Note: In the scope of this challenge, the visualization solution will be delivered as a standalone User Interface, but the vision is to integrate it in City Analytics and Control Room directly, to complement existing visualization tools (e.g. adding a new layer to existing maps)
 
+The solution includes a data visualization module so that users could act according to the insights generated by the first module: maps/heatmap (with the possibility to browse per time period - in our case: month- and to filter by type of index). 
 
 ##  Getting Started <a name = "getting_started"></a>
 
@@ -70,18 +84,21 @@ Once pip is installed, run the following command to download and install the req
 ## Run the DINA Open Data Ingestion module
 
 The first (optional) step is to process the input data from Open Data portals. This is done with the process_input_data block:
+
 `$ python process_input_data.py`
 
 This will generate some data files in the output_data folder. 
 Note: **this step is not required to start testing the solution** as some datasets requesting processing have already been generated and included in the repository. Indeed, some of them require heavy processing to be created. In particular, the hotel csv needs to call a geocoding API for each of the 90,000 hotels in Rome, which can take a long time. 
 
 From the files in the output_data, the indices can be generated. These are weighted averages of a subset of data indicators, as defined in the main method of create_indexes.py . To generate the indices, run:
+
 `$ python create_indexes.py`
 
 
 ## Generate and display the DINA Heat Maps (Lighting Needs Index, Security Needs Index, Connectivity Needs Index)
 
 Open a command line and go to the folder where DINA has been downloaded and commands:
+
 `$ python display_heatmap.py`
 
 ### Examples of generated maps
