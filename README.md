@@ -14,12 +14,6 @@
 - [Usage](#usage)
 - [Built Using](#built_using)
 
-##  About <a name = "about"></a>
-
-This project called DINA is leveraging Open Data from the city of Rome. It was a proposal submitted in the scope of an Open Innovation challenge organized by [Wazoku Innocentive](https://www.innocentive.com/) and sponsored by EnelX: [New Smart City Solutions Enabled by Open Data](https://openinnovability.enel.com/projects/New-smart-city-solutions-enabled-by-open-data)
-
-Full report (edited to make it open source) can be found here: [DINA_Project_Report.docx](./documentation/DINA_Project_Report.docx)
-
 <b>Abstract:</b>
 
 <i><b>DINA – “Data-driven Implicit Needs Analyzer"</b> can be considered as a Minimum Viable Product supporting <b>Smart Cities</b>, which aims at displaying on an heatmap a set of indexes (security needs, lighting needs, connectivity needs) based on <b>implicit citizen & tourist needs</b>, inferred from Public Administration Open Data.
